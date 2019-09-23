@@ -1,8 +1,11 @@
 {
   "name": "markdown-notebook",
+  "productName": "Markdown Notebook",
   "version": "0.1.0",
+  "main": "main/main.js",
   "private": true,
   "dependencies": {
+    "electron-is-dev": "^1.1.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.2"
@@ -11,9 +14,30 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "dev": "concurrently \"BROWSER=none PORT=4000 react-scripts start\" \"wait-on http://localhost:4000 && electron .\""
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.2",
+    "electron": "^6.0.10",
+    "electron-devtools-installer": "^2.2.4",
+    "electron-packager": "^14.0.6",
+    "wait-on": "^3.3.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
