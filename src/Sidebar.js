@@ -5,7 +5,7 @@ const Container = styled.div`
   background: ${({theme}) => theme.sidebarBackground};
   color: #FFFFFF;
   padding: 0.5rem;
-  width: 20rem;
+  height: 100%;
 `;
 
 export default function Sidebar() {
