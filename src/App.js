@@ -11,12 +11,12 @@ const theme = {
 };
 
 const Container = styled.div`
-  height: calc(100vh - 3rem);
+  height: 100vh;
   position: relative;
 
   .Resizer {
     position: relative;
-    left: -4px;
+    margin-left: -5px;
     width: 5px;
     cursor: ew-resize;
   }
@@ -30,11 +30,13 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <Header />
         <Container>
           <SplitPane split="vertical" minSize={250} maxSize={500}>
             <Sidebar />
-            <Main>Main content</Main>
+            <div>
+              <Header />
+              <Main>Main content</Main>
+            </div>
           </SplitPane>
         </Container>
       </div>

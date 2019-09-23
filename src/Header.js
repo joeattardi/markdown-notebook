@@ -12,7 +12,7 @@ const Container = styled.header`
 export default function Header() {
   return (
     <Container>
-      Header
+      
     </Container>
   );
 }

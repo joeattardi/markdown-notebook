@@ -6,12 +6,18 @@ const Container = styled.div`
   color: #FFFFFF;
   padding: 0.5rem;
   height: 100%;
+
+  h1 {
+    margin: 0;
+    font-size: 1.2rem;
+    text-align: center;
+  }
 `;
 
 export default function Sidebar() {
   return (
     <Container>
-      Sidebar
+      <h1>Markdown Notebook</h1>
     </Container>
   );
 }
