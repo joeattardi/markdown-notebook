@@ -11,7 +11,7 @@ const theme = {
 
 const Container = styled.div`
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 3rem);
 `;
 
 const Main = styled.main`
