@@ -1,6 +1,6 @@
 import React from 'react';
 import SplitPane from 'react-split-pane';
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import Header from './Header';
 import NoteContent from './NoteContent';
@@ -13,6 +13,12 @@ const theme = {
   sidebarHoverBackground: 'rgba(255, 255, 255, 0.2)',
   sidebarActiveBackground: 'rgba(0, 0, 0, 0.2)'
 };
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    font-family: 'Open Sans', sans-serif;
+  }
+`;
 
 const Container = styled.div`
   height: 100vh;
@@ -29,6 +35,7 @@ const Container = styled.div`
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
+      <GlobalStyle />
       <div>
         <Container>
           <SplitPane split="vertical" minSize={250} maxSize={500}>
