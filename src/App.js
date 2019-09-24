@@ -3,6 +3,8 @@ import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
 
 import Header from './Header';
+import NoteContent from './NoteContent';
+import NoteList from './NoteList';
 import Sidebar from './Sidebar';
 
 const theme = {
@@ -22,10 +24,6 @@ const Container = styled.div`
   }
 `;
 
-const Main = styled.main`
-  padding: 0.5rem;
-`;
-
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -35,7 +33,10 @@ export default function App() {
             <Sidebar />
             <div>
               <Header />
-              <Main>Main content</Main>
+              <SplitPane split="vertical" minSize={250} maxSize={500}>
+                <NoteList />
+                <NoteContent />
+              </SplitPane>
             </div>
           </SplitPane>
         </Container>
