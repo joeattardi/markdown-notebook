@@ -28,6 +28,7 @@ const NotebookList = styled.ul`
 
 export default function Sidebar() {
   const [notebooks, setNotebooks] = useState([]);
+  const [activeNotebook, setActiveNotebook] = useState(null);
 
   useEffect(() => {
     ipcRenderer.on('notebooks', (event, notebooks) => {
@@ -37,12 +38,21 @@ export default function Sidebar() {
     ipcRenderer.send('getNotebooks');
   }, []);
 
+  function onClickNotebook(notebook) {
+    setActiveNotebook(notebook.id);
+    ipcRenderer.send('getNotes', notebook.name);
+  }
+
   return (
     <Container>
       <h2>Notebooks</h2>
       <NotebookList>
         {notebooks.map(notebook => (
-          <Notebook key={notebook} name={notebook} />
+          <Notebook
+            key={notebook.id}
+            onClick={onClickNotebook}
+            notebook={notebook}
+            active={activeNotebook === notebook.id} />
         ))}
       </NotebookList>
     </Container>

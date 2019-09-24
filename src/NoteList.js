@@ -1,16 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+
+import Note from './Note';
+
+const { ipcRenderer } = window.require('electron');
 
 const Container = styled.div`
   border-right: 1px solid #CCCCCC;
-  padding: 0.5rem;
   height: 100%;
 `;
 
 export default function NoteList() {
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    ipcRenderer.on('notes', (event, notes) => {
+      setNotes(notes);
+    })
+  }, [])
+
   return (
     <Container>
-      Note List
+      {notes.map(note => (
+        <Note key={note.id} note={note} />
+      ))}
     </Container>
   );
 }

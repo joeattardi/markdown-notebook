@@ -9,19 +9,19 @@ const Container = styled.li`
   padding: 0.3rem 0.5rem;
   cursor: pointer;
 
-  &.active {
-    background: ${({theme}) => theme.sidebarActiveBackground};
-  }
-
   &:hover {
     background: ${({theme}) => theme.sidebarHoverBackground};
   }
+
+  &.active {
+    background: ${({theme}) => theme.sidebarActiveBackground};
+  }
 `;
 
-export default function Notebook({ name }) {
+export default function Notebook({ notebook, active, onClick }) {
   return (
-    <Container>
-      <FontAwesomeIcon icon={faBook} /> {name}
+    <Container className={active ? 'active' : ''} onClick={() => onClick(notebook)}>
+      <FontAwesomeIcon icon={faBook} /> {notebook.name}
     </Container>
   );
 }
