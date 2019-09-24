@@ -5,6 +5,8 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const isDev = require('electron-is-dev');
 const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 
+require('./notes');
+
 let mainWindow;
 
 async function createWindow() {

@@ -9,7 +9,9 @@ import Sidebar from './Sidebar';
 
 const theme = {
   headerBackground: '#EEEEEE',
-  sidebarBackground: '#016FB0'
+  sidebarBackground: '#294E72',
+  sidebarHoverBackground: 'rgba(255, 255, 255, 0.2)',
+  sidebarActiveBackground: 'rgba(0, 0, 0, 0.2)'
 };
 
 const Container = styled.div`
