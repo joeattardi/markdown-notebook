@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 
-const { ipcRenderer } = window.require('electron');
+import NoteEditor from './NoteEditor';
 
 const Container = styled.div`
   padding: 0.5rem;
@@ -14,18 +14,10 @@ const Container = styled.div`
   }
 `;
 
-export default function NoteContent({ isEditing }) {
-  const [note, setNote] = useState('');
-
-  useEffect(() => {
-    ipcRenderer.on('note', (event, noteContent) => {
-      setNote(noteContent);
-    });
-  }, []);
-
+export default function NoteContent({ note, isEditing, onChange }) {
   return (
     <Container>
-      {isEditing ? <pre>{note}</pre> : <ReactMarkdown source={note} />}
+      {note ? isEditing ? <NoteEditor content={note.content} onChange={onChange} /> : <ReactMarkdown source={note.content} /> : null}
     </Container>
   );
 }

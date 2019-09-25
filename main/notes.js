@@ -4,8 +4,9 @@ const path = require('path');
 const readline = require('readline');
 
 const { app, ipcMain } = require('electron');
-const frontmatter = require('front-matter');
 const slugify = require('slugify');
+
+const frontmatter = require('./frontMatter');
 
 const NOTE_DIRECTORY = path.resolve(app.getPath('home'), 'markdown-notebook');
 
@@ -27,7 +28,22 @@ async function getNotes(notebook) {
 function getNote(filename) {
   debug(`Loading note ${filename}`);
   const content = fs.readFileSync(filename, 'utf8');
-  return frontmatter(content).body;
+  const noteData = frontmatter.parseFrontMatter(content);
+
+  return {
+    filename,
+    ...noteData.attributes,
+    content: noteData.body
+  };
+}
+
+function saveNote(note) {
+  debug(`Saving note "${note.title}" to ${note.filename}`);
+  let content = frontmatter.createFrontMatter({
+    title: note.title
+  });
+
+  fs.writeFileSync(note.filename, content + note.content);
 }
 
 function getNoteData(notebook, filename) {
@@ -54,7 +70,7 @@ function getNoteData(notebook, filename) {
           debug('Found end delimiter');
           header = {
             ...header,
-            ...frontmatter(content).attributes
+            ...frontmatter.parseFrontMatter(content).attributes
           };
           debug(`Got data for note: ${header.title}`);
           reader.close();
@@ -88,4 +104,8 @@ ipcMain.on('getNotes', async (event, notebook) => {
 
 ipcMain.on('getNote', (event, filename) => {
   event.sender.send('note', getNote(filename));
+});
+
+ipcMain.on('saveNote', (event, note) => {
+  saveNote(note);
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 
@@ -6,6 +6,8 @@ import Header from './Header';
 import NoteContent from './NoteContent';
 import NoteList from './NoteList';
 import Sidebar from './Sidebar';
+
+const { ipcRenderer } = window.require('electron');
 
 const theme = {
   headerBackground: '#EEEEEE',
@@ -34,10 +36,28 @@ const Container = styled.div`
 
 export default function App() {
   const [isEditing, setEditing] = useState(false);
+  const [currentNote, setCurrentNote] = useState(null);
 
   function toggleEditing() {
     setEditing(!isEditing);
   }
+
+  function updateNote(content) {
+    setCurrentNote({
+      ...currentNote,
+      content
+    });
+  }
+
+  useEffect(() => {
+    ipcRenderer.once('note', (event, note) => {
+      if (currentNote) {
+        ipcRenderer.send('saveNote', currentNote);
+      }
+
+      setCurrentNote(note);
+    });
+  }, [currentNote]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -50,7 +70,7 @@ export default function App() {
               <Header isEditing={isEditing} onEditToggle={toggleEditing} />
               <SplitPane split="vertical" minSize={250} maxSize={500}>
                 <NoteList />
-                <NoteContent isEditing={isEditing} />
+                <NoteContent note={currentNote} onChange={updateNote} isEditing={isEditing} />
               </SplitPane>
             </div>
           </SplitPane>
