@@ -8,7 +8,7 @@ import ToggleButton from './ToggleButton';
 export default function Toolbar({ isEditing, onEditToggle }) {
   return (
     <div>
-      <ToggleButton active={isEditing} onClick={onEditToggle}>
+      <ToggleButton onClick={onEditToggle} variant={isEditing ? 'active' : 'toolbar'} title="Toggle edit mode">
         <FontAwesomeIcon icon={faPencilAlt} />
       </ToggleButton>
     </div>

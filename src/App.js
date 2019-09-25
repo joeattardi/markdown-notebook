@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SplitPane from 'react-split-pane';
+import ReactTooltip from 'react-tooltip'
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import Header from './Header';
@@ -62,6 +63,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
+      <ReactTooltip effect="solid" delayShow={250} />
       <div>
         <Container>
           <SplitPane split="vertical" minSize={250} maxSize={500}>
