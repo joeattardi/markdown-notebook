@@ -53,10 +53,19 @@ export default function App() {
       ipcRenderer.send('saveNote', {
         ...currentNote,
         content: editText
-      })
+      });
     };
 
     ipcRenderer.send('getNote', note.filename);
+  }
+
+  function changeNotebook() {
+    if (currentNote) {
+      ipcRenderer.send('saveNote', {
+        ...currentNote,
+        content: editText
+      });
+    }
   }
   
   useEffect(() => {
@@ -73,7 +82,7 @@ export default function App() {
       <div>
         <Container>
           <SplitPane split="vertical" minSize={250} maxSize={500}>
-            <Sidebar />
+            <Sidebar onChangeNotebook={changeNotebook} />
             <div>
               <Header isEditing={isEditing} onEditToggle={toggleEditing} />
               <SplitPane split="vertical" minSize={250} maxSize={500}>

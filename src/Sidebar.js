@@ -26,7 +26,7 @@ const NotebookList = styled.ul`
   padding: 0;
 `;
 
-export default function Sidebar() {
+export default function Sidebar({ onChangeNotebook }) {
   const [notebooks, setNotebooks] = useState([]);
   const [activeNotebook, setActiveNotebook] = useState(null);
 
@@ -40,6 +40,7 @@ export default function Sidebar() {
   }, []);
 
   function onClickNotebook(notebook) {
+    onChangeNotebook();
     setActiveNotebook(notebook.id);
     ipcRenderer.send('getNotes', notebook.name);
   }
