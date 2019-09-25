@@ -22,6 +22,7 @@ export default function NoteList() {
   useEffect(() => {
     ipcRenderer.on('notes', (event, notes) => {
       setNotes(notes);
+      onClickNote(notes[0]);
     })
   }, [])
 

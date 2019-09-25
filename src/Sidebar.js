@@ -33,6 +33,7 @@ export default function Sidebar() {
   useEffect(() => {
     ipcRenderer.on('notebooks', (event, notebooks) => {
       setNotebooks(notebooks);
+      onClickNotebook(notebooks[0]);
     });
 
     ipcRenderer.send('getNotebooks');
