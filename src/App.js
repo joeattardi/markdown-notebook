@@ -38,6 +38,8 @@ const Container = styled.div`
 `;
 
 export default function App() {
+  const [notebooks, setNotebooks] = useState([]);
+  const [currentNotebook, setCurrentNotebook] = useState(null);
   const [isEditing, setEditing] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
   const [editText, setEditText] = useState('');
@@ -59,9 +61,15 @@ export default function App() {
     autoSave();
   }
 
-  function changeNote(note) {
+  function selectNote(note) {
     saveCurrentNote();
     ipcRenderer.send('getNote', note.filename);
+  }
+
+  function selectNotebook(notebook) {
+    saveCurrentNote();
+    setCurrentNotebook(notebook);
+    ipcRenderer.send('getNotes', notebook.name);
   }
 
   function saveCurrentNote() {
@@ -78,6 +86,13 @@ export default function App() {
       setCurrentNote(note);
       setEditText(note.content);
     });
+
+    ipcRenderer.on('notebooks', (event, notebooks) => {
+      setNotebooks(notebooks);
+      selectNotebook(notebooks[0]);
+    });
+
+    ipcRenderer.send('getNotebooks');
   }, []);
 
   return (
@@ -87,11 +102,11 @@ export default function App() {
       <div>
         <Container>
           <SplitPane split="vertical" minSize={250} maxSize={500}>
-            <Sidebar onChangeNotebook={saveCurrentNote} />
+            <Sidebar notebooks={notebooks} currentNotebook={currentNotebook} onChangeNotebook={selectNotebook} />
             <div>
               <Header isEditing={isEditing} onEditToggle={toggleEditing} />
               <SplitPane split="vertical" minSize={250} maxSize={500}>
-                <NoteList onChangeNote={changeNote} />
+                <NoteList onChangeNote={selectNote} />
                 <NoteContent note={currentNote} editText={editText} onChange={updateNote} isEditing={isEditing} />
               </SplitPane>
             </div>

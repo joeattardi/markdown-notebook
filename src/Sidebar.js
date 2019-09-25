@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react';
-
+import React from 'react';
 import styled from 'styled-components';
 
 import Notebook from './Notebook';
-
-const { ipcRenderer } = window.require('electron');
 
 const Container = styled.div`
   background: ${({theme}) => theme.sidebarBackground};
@@ -26,25 +23,7 @@ const NotebookList = styled.ul`
   padding: 0;
 `;
 
-export default function Sidebar({ onChangeNotebook }) {
-  const [notebooks, setNotebooks] = useState([]);
-  const [activeNotebook, setActiveNotebook] = useState(null);
-
-  useEffect(() => {
-    ipcRenderer.on('notebooks', (event, notebooks) => {
-      setNotebooks(notebooks);
-      onClickNotebook(notebooks[0]);
-    });
-
-    ipcRenderer.send('getNotebooks');
-  }, []);
-
-  function onClickNotebook(notebook) {
-    onChangeNotebook();
-    setActiveNotebook(notebook.id);
-    ipcRenderer.send('getNotes', notebook.name);
-  }
-
+export default function Sidebar({ currentNotebook, notebooks, onChangeNotebook }) {
   return (
     <Container>
       <h2>Notebooks</h2>
@@ -52,9 +31,9 @@ export default function Sidebar({ onChangeNotebook }) {
         {notebooks.map(notebook => (
           <Notebook
             key={notebook.id}
-            onClick={onClickNotebook}
+            onClick={onChangeNotebook}
             notebook={notebook}
-            active={activeNotebook === notebook.id} />
+            active={currentNotebook === notebook} />
         ))}
       </NotebookList>
     </Container>
