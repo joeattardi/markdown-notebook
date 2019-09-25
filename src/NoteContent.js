@@ -14,10 +14,10 @@ const Container = styled.div`
   }
 `;
 
-export default function NoteContent({ note, isEditing, onChange }) {
+export default function NoteContent({ note, isEditing, editText, onChange }) {
   return (
     <Container>
-      {note ? isEditing ? <NoteEditor content={note.content} onChange={onChange} /> : <ReactMarkdown source={note.content} /> : null}
+      {note ? isEditing ? <NoteEditor content={editText} onChange={onChange} /> : <ReactMarkdown source={note.content} /> : null}
     </Container>
   );
 }

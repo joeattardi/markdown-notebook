@@ -10,13 +10,14 @@ const Container = styled.div`
   height: calc(100% - 3.25rem);
 `;
 
-export default function NoteList() {
+export default function NoteList({ onChangeNote }) {
   const [notes, setNotes] = useState([]);
   const [activeNote, setActiveNote] = useState(null);
 
   function onClickNote(note) {
+    onChangeNote(note);
     setActiveNote(note.id);
-    ipcRenderer.send('getNote', note.filename);
+    // ipcRenderer.send('getNote', note.filename);
   }
 
   useEffect(() => {

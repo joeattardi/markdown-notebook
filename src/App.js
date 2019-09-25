@@ -38,27 +38,33 @@ const Container = styled.div`
 export default function App() {
   const [isEditing, setEditing] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
+  const [editText, setEditText] = useState('');
 
   function toggleEditing() {
     setEditing(!isEditing);
   }
 
   function updateNote(content) {
-    setCurrentNote({
-      ...currentNote,
-      content
-    });
+    setEditText(content);
   }
 
-  useEffect(() => {
-    ipcRenderer.once('note', (event, note) => {
-      if (currentNote) {
-        ipcRenderer.send('saveNote', currentNote);
-      }
+  function changeNote(note) {
+    if (currentNote) {
+      ipcRenderer.send('saveNote', {
+        ...currentNote,
+        content: editText
+      })
+    };
 
+    ipcRenderer.send('getNote', note.filename);
+  }
+  
+  useEffect(() => {
+    ipcRenderer.on('note', (event, note) => {
       setCurrentNote(note);
+      setEditText(note.content);
     });
-  }, [currentNote]);
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -71,8 +77,8 @@ export default function App() {
             <div>
               <Header isEditing={isEditing} onEditToggle={toggleEditing} />
               <SplitPane split="vertical" minSize={250} maxSize={500}>
-                <NoteList />
-                <NoteContent note={currentNote} onChange={updateNote} isEditing={isEditing} />
+                <NoteList onChangeNote={changeNote} />
+                <NoteContent note={currentNote} editText={editText} onChange={updateNote} isEditing={isEditing} />
               </SplitPane>
             </div>
           </SplitPane>

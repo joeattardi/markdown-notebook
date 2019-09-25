@@ -38,7 +38,6 @@ export default function NoteEditor({ content, onChange }) {
     <Container>
       <CodeMirror
         ref={editorRef}
-        autoFocus={true}
         autoCursor={false}
         onChange={onEditorChange}
         options={{
