@@ -6,6 +6,7 @@ const Container = styled.div`
   padding: 0.3rem 0.5rem;
   cursor: pointer;
   font-size: 0.9rem;
+  user-select: none;
 
   &:hover {
     background: rgba(0, 0, 0, 0.1);

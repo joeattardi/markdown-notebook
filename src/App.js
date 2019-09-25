@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 
@@ -33,6 +33,12 @@ const Container = styled.div`
 `;
 
 export default function App() {
+  const [isEditing, setEditing] = useState(false);
+
+  function toggleEditing() {
+    setEditing(!isEditing);
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -41,10 +47,10 @@ export default function App() {
           <SplitPane split="vertical" minSize={250} maxSize={500}>
             <Sidebar />
             <div>
-              <Header />
+              <Header isEditing={isEditing} onEditToggle={toggleEditing} />
               <SplitPane split="vertical" minSize={250} maxSize={500}>
                 <NoteList />
-                <NoteContent />
+                <NoteContent isEditing={isEditing} />
               </SplitPane>
             </div>
           </SplitPane>

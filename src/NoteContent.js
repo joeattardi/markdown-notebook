@@ -14,7 +14,7 @@ const Container = styled.div`
   }
 `;
 
-export default function NoteContent() {
+export default function NoteContent({ isEditing }) {
   const [note, setNote] = useState('');
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function NoteContent() {
 
   return (
     <Container>
-      <ReactMarkdown source={note} />
+      {isEditing ? <pre>{note}</pre> : <ReactMarkdown source={note} />}
     </Container>
   );
 }
