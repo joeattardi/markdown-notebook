@@ -12,6 +12,11 @@ const Container = styled.div`
 
 export default function NoteList() {
   const [notes, setNotes] = useState([]);
+  const [activeNote, setActiveNote] = useState(null);
+
+  function onClickNote(note) {
+    setActiveNote(note.id);
+  }
 
   useEffect(() => {
     ipcRenderer.on('notes', (event, notes) => {
@@ -22,7 +27,11 @@ export default function NoteList() {
   return (
     <Container>
       {notes.map(note => (
-        <Note key={note.id} note={note} />
+        <Note
+          active={activeNote === note.id}
+          key={note.id}
+          note={note}
+          onClick={onClickNote} />
       ))}
     </Container>
   );

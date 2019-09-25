@@ -16,9 +16,9 @@ const Container = styled.div`
   }
 `;
 
-export default function Note({ note }) {
+export default function Note({ active, note, onClick }) {
   return (
-    <Container>
+    <Container className={active ? 'active' : ''} onClick={() => onClick(note)}>
       {note.title}
     </Container>
   );
