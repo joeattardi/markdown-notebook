@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+
 import SplitPane from 'react-split-pane';
 import ReactTooltip from 'react-tooltip'
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+import { useDebouncedCallback } from 'use-debounce';
 
 import Header from './Header';
 import NoteContent from './NoteContent';
@@ -40,26 +42,25 @@ export default function App() {
   const [currentNote, setCurrentNote] = useState(null);
   const [editText, setEditText] = useState('');
 
+  const [autoSave] = useDebouncedCallback(() => {
+    saveCurrentNote();
+  }, 1000);
+
   function toggleEditing() {
     setEditing(!isEditing);
   }
 
   function updateNote(content) {
     setEditText(content);
+    autoSave();
   }
 
   function changeNote(note) {
-    if (currentNote) {
-      ipcRenderer.send('saveNote', {
-        ...currentNote,
-        content: editText
-      });
-    };
-
+    saveCurrentNote();
     ipcRenderer.send('getNote', note.filename);
   }
 
-  function changeNotebook() {
+  function saveCurrentNote() {
     if (currentNote) {
       ipcRenderer.send('saveNote', {
         ...currentNote,
@@ -82,7 +83,7 @@ export default function App() {
       <div>
         <Container>
           <SplitPane split="vertical" minSize={250} maxSize={500}>
-            <Sidebar onChangeNotebook={changeNotebook} />
+            <Sidebar onChangeNotebook={saveCurrentNote} />
             <div>
               <Header isEditing={isEditing} onEditToggle={toggleEditing} />
               <SplitPane split="vertical" minSize={250} maxSize={500}>
