@@ -11,10 +11,10 @@ const Container = styled.header`
   border-bottom: 1px solid #CCCCCC;
 `;
 
-export default function Header({ isEditing, onEditToggle }) {
+export default function Header({ isEditing, onEditToggle, onNew }) {
   return (
     <Container>
-      <Toolbar isEditing={isEditing} onEditToggle={onEditToggle} />
+      <Toolbar isEditing={isEditing} onEditToggle={onEditToggle} onNew={onNew} />
     </Container>
   );
 }

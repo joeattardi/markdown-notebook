@@ -39,6 +39,7 @@ const Container = styled.div`
 
 export default function App() {
   const [notebooks, setNotebooks] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [currentNotebook, setCurrentNotebook] = useState(null);
   const [isEditing, setEditing] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
@@ -81,10 +82,19 @@ export default function App() {
     }
   }
   
+  function createNewNote() {
+    console.log('New note');
+  }
+
   useEffect(() => {
     ipcRenderer.on('note', (event, note) => {
       setCurrentNote(note);
       setEditText(note.content);
+    });
+
+    ipcRenderer.on('notes', (event, notes) => {
+      setNotes(notes);
+      selectNote(notes[0]);
     });
 
     ipcRenderer.on('notebooks', (event, notebooks) => {
@@ -104,9 +114,9 @@ export default function App() {
           <SplitPane split="vertical" minSize={250} maxSize={500}>
             <Sidebar notebooks={notebooks} currentNotebook={currentNotebook} onChangeNotebook={selectNotebook} />
             <div>
-              <Header isEditing={isEditing} onEditToggle={toggleEditing} />
+              <Header isEditing={isEditing} onEditToggle={toggleEditing} onNew={createNewNote} />
               <SplitPane split="vertical" minSize={250} maxSize={500}>
-                <NoteList onChangeNote={selectNote} />
+                <NoteList currentNote={currentNote} onChangeNote={selectNote} notes={notes} />
                 <NoteContent note={currentNote} editText={editText} onChange={updateNote} isEditing={isEditing} />
               </SplitPane>
             </div>

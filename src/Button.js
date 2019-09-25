@@ -26,6 +26,7 @@ const Button = styled.button`
   cursor: pointer;
   border-radius: 3px;
   outline: none;
+  margin: 0 0.25rem;
 `;
 
 Button.defaultProps = {
