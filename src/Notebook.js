@@ -8,6 +8,7 @@ const Container = styled.li`
   list-style: none;
   padding: 0.3rem 0.5rem;
   cursor: pointer;
+  font-size: 0.9rem;
 
   &:hover {
     background: ${({theme}) => theme.sidebarHoverBackground};

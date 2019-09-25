@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStickyNote } from '@fortawesome/free-regular-svg-icons'
 import styled from 'styled-components';
 
 const Container = styled.div`
   padding: 0.3rem 0.5rem;
   cursor: pointer;
+  font-size: 0.9rem;
 
   &:hover {
     background: rgba(0, 0, 0, 0.1);
@@ -20,7 +19,7 @@ const Container = styled.div`
 export default function Note({ note }) {
   return (
     <Container>
-      <FontAwesomeIcon icon={faStickyNote} /> {note.title}
+      {note.title}
     </Container>
   );
 }
