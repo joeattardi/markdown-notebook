@@ -9,6 +9,7 @@ const Container = styled.li`
   padding: 0.3rem 0.5rem;
   cursor: pointer;
   font-size: 0.9rem;
+  display: flex;
 
   &:hover {
     background: ${({theme}) => theme.sidebarHoverBackground};
@@ -19,10 +20,19 @@ const Container = styled.li`
   }
 `;
 
+const Name = styled.div`
+  flex-grow: 1;
+`;
+
+const Count = styled.div`
+  font-weight: bold;
+`;
+
 export default function Notebook({ notebook, active, onClick }) {
   return (
     <Container className={active ? 'active' : ''} onClick={() => onClick(notebook)}>
-      <FontAwesomeIcon icon={faBook} /> {notebook.name}
+      <Name><FontAwesomeIcon icon={faBook} /> {notebook.name}</Name>
+      <Count>{notebook.count}</Count>
     </Container>
   );
 }

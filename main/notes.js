@@ -14,9 +14,15 @@ function getNotebooks() {
   debug(`Getting notebooks in directory: ${NOTE_DIRECTORY}`);
   return fs.readdirSync(NOTE_DIRECTORY).map(name => ({
     name,
-    id: slugify(name)
+    id: slugify(name),
+    count: getNoteCount(name)
   }));
 };
+
+function getNoteCount(notebook) {
+  debug(`Getting note count for notebook: ${notebook}`);
+  return fs.readdirSync(path.resolve(NOTE_DIRECTORY, notebook)).length;
+}
 
 async function getNotes(notebook) {
   debug(`Getting notes for notebook: ${notebook}`);
