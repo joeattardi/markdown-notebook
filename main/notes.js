@@ -24,6 +24,12 @@ async function getNotes(notebook) {
   return notes;
 }
 
+function getNote(filename) {
+  debug(`Loading note ${filename}`);
+  const content = fs.readFileSync(filename, 'utf8');
+  return frontmatter(content).body;
+}
+
 function getNoteData(notebook, filename) {
   debug(`Getting note data for ${notebook}/${filename}`);
   return new Promise((resolve, reject) => {
@@ -34,7 +40,9 @@ function getNoteData(notebook, filename) {
     const slug = slugify(filename.slice(0, -3));
     let foundStart = false;
     let content = '';
-    let header;
+    let header = {
+      filename: path.resolve(NOTE_DIRECTORY, notebook, filename)
+    };
 
     reader.on('line', line => {
       content += `${line}\n`;
@@ -44,7 +52,10 @@ function getNoteData(notebook, filename) {
           foundStart = true;
         } else {
           debug('Found end delimiter');
-          header = frontmatter(content).attributes;
+          header = {
+            ...header,
+            ...frontmatter(content).attributes
+          };
           debug(`Got data for note: ${header.title}`);
           reader.close();
         }
@@ -55,6 +66,7 @@ function getNoteData(notebook, filename) {
       if (!header) {
         debug(`Didn't find any front matter for ${filename}, using ${slug}`);
         header = {
+          ...header,
           title: slug
         }
       }
@@ -72,4 +84,8 @@ ipcMain.on('getNotebooks', event => {
 
 ipcMain.on('getNotes', async (event, notebook) => {
   event.sender.send('notes', await getNotes(notebook));
+});
+
+ipcMain.on('getNote', (event, filename) => {
+  event.sender.send('note', getNote(filename));
 });

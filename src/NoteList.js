@@ -16,6 +16,7 @@ export default function NoteList() {
 
   function onClickNote(note) {
     setActiveNote(note.id);
+    ipcRenderer.send('getNote', note.filename);
   }
 
   useEffect(() => {
