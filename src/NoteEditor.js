@@ -1,10 +1,26 @@
 import React, { useRef, useEffect } from 'react';
+import styled from 'styled-components';
 
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/markdown/markdown';
+
+const Container = styled.div`
+  height: calc(100% - 4.2rem);
+  position: relative;
+
+  .react-codemirror2 {
+    height: 100%;
+    position: relative;
+  }
+
+  .CodeMirror {
+    height: 100%;
+    font-size: 1.2rem;
+  }
+`;
 
 export default function NoteEditor({ content, onChange }) {
   const editorRef = useRef(null);
@@ -19,15 +35,17 @@ export default function NoteEditor({ content, onChange }) {
   }, []);
   
   return (
-    <CodeMirror
-      ref={editorRef}
-      autoFocus={true}
-      autoCursor={false}
-      onChange={onEditorChange}
-      options={{
-        mode: 'markdown',
-        autofocus: true
-      }}
-      value={content} />
+    <Container>
+      <CodeMirror
+        ref={editorRef}
+        autoFocus={true}
+        autoCursor={false}
+        onChange={onEditorChange}
+        options={{
+          mode: 'markdown',
+          autofocus: true
+        }}
+        value={content} />
+      </Container>
   );
 }

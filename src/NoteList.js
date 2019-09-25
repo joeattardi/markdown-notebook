@@ -7,7 +7,7 @@ const { ipcRenderer } = window.require('electron');
 
 const Container = styled.div`
   border-right: 1px solid #CCCCCC;
-  height: 100%;
+  height: calc(100% - 3.25rem);
 `;
 
 export default function NoteList() {
