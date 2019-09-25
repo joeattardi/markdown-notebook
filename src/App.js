@@ -48,6 +48,10 @@ export default function App() {
 
   function toggleEditing() {
     setEditing(!isEditing);
+    setCurrentNote({
+      ...currentNote,
+      content: editText
+    });
   }
 
   function updateNote(content) {
