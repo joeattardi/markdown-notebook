@@ -64,7 +64,13 @@ export default function App() {
 
   function selectNote(note) {
     saveCurrentNote();
-    ipcRenderer.send('getNote', note.filename);
+
+    if (note) {
+      ipcRenderer.send('getNote', note.filename);
+    } else {
+      setCurrentNote(null);
+      setEditText('');
+    }
   }
 
   function selectNotebook(notebook) {
@@ -82,6 +88,34 @@ export default function App() {
     }
   }
   
+  function deleteNote() {
+    if (currentNote) {
+      const index = notes.findIndex(note => note.filename === currentNote.filename);
+
+      setNotes(notes.filter(note => note.filename !== currentNote.filename));
+      setCurrentNotebook({
+        ...currentNotebook,
+        count: currentNotebook.count - 1
+      });
+
+      setNotebooks(notebooks.map(notebook => {
+        if (notebook.id === currentNotebook.id) {
+          return {...currentNotebook, count: currentNotebook.count - 1};
+        }
+
+        return notebook;
+      }));
+
+      if (index === notes.length - 1) {
+        selectNote(notes[index - 1]);
+      } else {
+        selectNote(notes[index + 1]);
+      }
+
+      ipcRenderer.send('deleteNote', currentNote.filename);
+    }
+  }
+
   function createNewNote() {
     ipcRenderer.once('noteCreated', (event, note) => {
       setNotes([
@@ -137,7 +171,11 @@ export default function App() {
           <SplitPane split="vertical" minSize={250} maxSize={500}>
             <Sidebar notebooks={notebooks} currentNotebook={currentNotebook} onChangeNotebook={selectNotebook} />
             <div>
-              <Header isEditing={isEditing} onEditToggle={toggleEditing} onNew={createNewNote} />
+              <Header
+                isEditing={isEditing}
+                onEditToggle={toggleEditing}
+                onNew={createNewNote}
+                onDelete={deleteNote} />
               <SplitPane split="vertical" minSize={250} maxSize={500}>
                 <NoteList currentNote={currentNote} onChangeNote={selectNote} notes={notes} />
                 <NoteContent note={currentNote} editText={editText} onChange={updateNote} isEditing={isEditing} />

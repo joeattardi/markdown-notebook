@@ -11,6 +11,11 @@ const frontmatter = require('./frontMatter');
 const NOTE_DIRECTORY = path.resolve(app.getPath('home'), 'markdown-notebook');
 const NEW_NOTE_NAME = 'New Note';
 
+function deleteNote(noteFilename) {
+  debug(`Deleting note: ${noteFilename}`);
+  fs.unlinkSync(noteFilename);
+}
+
 function getNewNoteName(notebook) {
   let counter = 1;
   let name = NEW_NOTE_NAME;
@@ -154,4 +159,9 @@ ipcMain.on('saveNote', (event, note) => {
 
 ipcMain.on('createNote', (event, notebook) => {
   event.sender.send('noteCreated', createNote(notebook));
+});
+
+ipcMain.on('deleteNote', (event, noteFilename) => {
+  deleteNote(noteFilename);
+  event.sender.send('noteDeleted');
 });
