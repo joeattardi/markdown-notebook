@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import NoteEditor from './NoteEditor';
 
+import { SET_NOTE_CONTENT } from './store/notes';
 import { Notes } from './store';
 
 const Container = styled.div`
@@ -16,12 +17,17 @@ const Container = styled.div`
   }
 `;
 
-export default function NoteContent({ isEditing, editText, onChange }) {
+export default function NoteContent({ isEditing }) {
   const { noteContent } = useContext(Notes.State);
+  const notesDispatch = useContext(Notes.Dispatch);
+
+  function onNoteChange(content) {
+    notesDispatch({ type: SET_NOTE_CONTENT, payload: content });
+  }
 
   return (
     <Container>
-      {noteContent ? isEditing ? <NoteEditor content={editText} onChange={onChange} /> : <ReactMarkdown source={noteContent} /> : null}
+      {noteContent ? isEditing ? <NoteEditor content={noteContent} onChange={onNoteChange} /> : <ReactMarkdown source={noteContent} /> : null}
     </Container>
   );
 }

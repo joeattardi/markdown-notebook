@@ -45,7 +45,6 @@ export default function App() {
   const [currentNotebook, setCurrentNotebook] = useState(null);
   const [isEditing, setEditing] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
-  const [editText, setEditText] = useState('');
 
   const [autoSave] = useDebouncedCallback(() => {
     saveCurrentNote();
@@ -55,12 +54,11 @@ export default function App() {
     setEditing(!isEditing);
     setCurrentNote({
       ...currentNote,
-      content: editText
     });
   }
 
   function updateNote(content) {
-    setEditText(content);
+    // setEditText(content);
     autoSave();
   }
 
@@ -72,7 +70,7 @@ export default function App() {
     } else {
       setCurrentNote(null);
       setEditing(false);
-      setEditText('');
+      // setEditText('');
     }
   }
 
@@ -89,7 +87,7 @@ export default function App() {
     if (currentNote) {
       ipcRenderer.send('saveNote', {
         ...currentNote,
-        content: editText
+        // content: editText
       });
     }
   }
@@ -195,7 +193,7 @@ export default function App() {
                   onDelete={deleteNote} />
                 <SplitPane split="vertical" minSize={250} maxSize={500}>
                   <NoteList />
-                  <NoteContent note={currentNote} editText={editText} onChange={updateNote} isEditing={isEditing} />
+                  <NoteContent isEditing={isEditing} />
                 </SplitPane>
               </div>
             </SplitPane>
