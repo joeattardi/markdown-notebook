@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 
 import NoteEditor from './NoteEditor';
+
+import { Notes } from './store';
 
 const Container = styled.div`
   padding: 0.5rem;
@@ -14,10 +16,12 @@ const Container = styled.div`
   }
 `;
 
-export default function NoteContent({ note, isEditing, editText, onChange }) {
+export default function NoteContent({ isEditing, editText, onChange }) {
+  const { noteContent } = useContext(Notes.State);
+
   return (
     <Container>
-      {note ? isEditing ? <NoteEditor content={editText} onChange={onChange} /> : <ReactMarkdown source={note.content} /> : null}
+      {noteContent ? isEditing ? <NoteEditor content={editText} onChange={onChange} /> : <ReactMarkdown source={noteContent} /> : null}
     </Container>
   );
 }

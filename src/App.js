@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import SplitPane from 'react-split-pane';
 import ReactTooltip from 'react-tooltip'
@@ -9,6 +9,8 @@ import Header from './Header';
 import NoteContent from './NoteContent';
 import NoteList from './NoteList';
 import Sidebar from './Sidebar';
+
+import { Store } from './store';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -173,52 +175,33 @@ export default function App() {
     ipcRenderer.send('createNote', currentNotebook.name);
   }
 
-  useEffect(() => {
-    ipcRenderer.on('note', (event, note) => {
-      setCurrentNote(note);
-      setEditText(note.content);
-    });
-
-    ipcRenderer.on('notes', (event, notes) => {
-      setNotes(notes);
-      selectNote(notes[0]);
-    });
-
-    ipcRenderer.on('notebooks', (event, notebooks) => {
-      setNotebooks(notebooks);
-      selectNotebook(notebooks[0]);
-    });
-
-    ipcRenderer.send('getNotebooks');
-  }, []);
-
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <ReactTooltip effect="solid" delayShow={250} />
-      <div>
-        <Container>
-          <SplitPane split="vertical" minSize={250} maxSize={500}>
-            <Sidebar
-              notebooks={notebooks}
-              currentNotebook={currentNotebook}
-              onCreateNotebook={createNewNotebook}
-              onDeleteNotebook={deleteNotebook}
-              onChangeNotebook={selectNotebook} />
-            <div>
-              <Header
-                isEditing={isEditing}
-                onEditToggle={toggleEditing}
-                onNew={createNewNote}
-                onDelete={deleteNote} />
-              <SplitPane split="vertical" minSize={250} maxSize={500}>
-                <NoteList currentNote={currentNote} onChangeNote={selectNote} notes={notes} />
-                <NoteContent note={currentNote} editText={editText} onChange={updateNote} isEditing={isEditing} />
-              </SplitPane>
-            </div>
-          </SplitPane>
-        </Container>
-      </div>
-    </ThemeProvider>
+    <Store>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <ReactTooltip effect="solid" delayShow={250} />
+        <div>
+          <Container>
+            <SplitPane split="vertical" minSize={250} maxSize={500}>
+              <Sidebar
+                onCreateNotebook={createNewNotebook}
+                onDeleteNotebook={deleteNotebook}
+                onChangeNotebook={selectNotebook} />
+              <div>
+                <Header
+                  isEditing={isEditing}
+                  onEditToggle={toggleEditing}
+                  onNew={createNewNote}
+                  onDelete={deleteNote} />
+                <SplitPane split="vertical" minSize={250} maxSize={500}>
+                  <NoteList />
+                  <NoteContent note={currentNote} editText={editText} onChange={updateNote} isEditing={isEditing} />
+                </SplitPane>
+              </div>
+            </SplitPane>
+          </Container>
+        </div>
+      </ThemeProvider>
+    </Store>
   );
 }
