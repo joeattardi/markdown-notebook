@@ -14,10 +14,15 @@ const Container = styled.div`
 `;
 
 export default function NoteList() {
-  const { notes, currentNote } = useContext(Notes.State);
+  const { notes, currentNote, noteContent } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
   function onClickNote(note) {
+    ipcRenderer.send('saveNote', {
+      ...currentNote,
+      content: noteContent
+    });
+
     notesDispatch({ type: SET_CURRENT_NOTE, payload: note });
   }
 

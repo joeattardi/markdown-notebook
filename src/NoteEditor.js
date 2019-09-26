@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useContext, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { UnControlled as CodeMirror } from 'react-codemirror2';
@@ -6,6 +6,8 @@ import { UnControlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/markdown/markdown';
+
+import { Notes } from './store';
 
 const Container = styled.div`
   height: calc(100% - 4.2rem);
@@ -24,6 +26,7 @@ const Container = styled.div`
 
 export default function NoteEditor({ content, onChange }) {
   const editorRef = useRef(null);
+  const { currentNote } = useContext(Notes.State);
 
   function onEditorChange(editor, data, value) {
     onChange(value);
@@ -32,7 +35,7 @@ export default function NoteEditor({ content, onChange }) {
   useEffect(() => {
     editorRef.current.editor.focus();
     editorRef.current.editor.setCursor({ line: 0, ch: 0 });
-  }, []);
+  }, [currentNote]);
   
   return (
     <Container>
