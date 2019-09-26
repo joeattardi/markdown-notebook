@@ -33,7 +33,7 @@ export default function Sidebar({ currentNotebook, notebooks, onChangeNotebook }
             key={notebook.id}
             onClick={onChangeNotebook}
             notebook={notebook}
-            active={currentNotebook === notebook} />
+            active={currentNotebook && currentNotebook.id === notebook.id} />
         ))}
       </NotebookList>
     </Container>

@@ -9,6 +9,42 @@ const slugify = require('slugify');
 const frontmatter = require('./frontMatter');
 
 const NOTE_DIRECTORY = path.resolve(app.getPath('home'), 'markdown-notebook');
+const NEW_NOTE_NAME = 'New Note';
+
+function getNewNoteName(notebook) {
+  let counter = 1;
+  let name = NEW_NOTE_NAME;
+  let filename = slugify(name).toLowerCase() + '.md';
+
+  while (fs.existsSync(path.resolve(NOTE_DIRECTORY, notebook, filename))) {
+    name = `${NEW_NOTE_NAME} ${counter++}`;
+    filename = slugify(name).toLowerCase() + '.md';
+  }
+
+  return name;
+}
+
+function createNote(notebook) {
+  debug(`Creating new note in notebook: ${notebook}`);
+
+  const newNoteName = getNewNoteName(notebook);
+  const newNoteSlug = slugify(newNoteName);
+  const newNoteFilename = path.resolve(NOTE_DIRECTORY, notebook, newNoteSlug.toLowerCase() + '.md');
+
+  const note = {
+    title: newNoteName,
+    filename: newNoteFilename,
+    content: '# ' + newNoteName
+  }
+
+  saveNote(note);
+
+  return {
+    title: note.title,
+    id: newNoteSlug,
+    filename: note.filename
+  };
+}
 
 function getNotebooks() {
   debug(`Getting notebooks in directory: ${NOTE_DIRECTORY}`);
@@ -114,4 +150,8 @@ ipcMain.on('getNote', (event, filename) => {
 
 ipcMain.on('saveNote', (event, note) => {
   saveNote(note);
+});
+
+ipcMain.on('createNote', (event, notebook) => {
+  event.sender.send('noteCreated', createNote(notebook));
 });

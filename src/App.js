@@ -83,7 +83,30 @@ export default function App() {
   }
   
   function createNewNote() {
-    console.log('New note');
+    ipcRenderer.once('noteCreated', (event, note) => {
+      setNotes([
+        ...notes,
+        note
+      ]);
+
+      setCurrentNotebook({
+        ...currentNotebook,
+        count: currentNotebook.count + 1
+      });
+
+      setNotebooks(notebooks.map(notebook => {
+        if (notebook.id === currentNotebook.id) {
+          return {...currentNotebook, count: currentNotebook.count + 1};
+        }
+
+        return notebook;
+      }));
+
+      selectNote(note);
+      setEditing(true);
+    });
+
+    ipcRenderer.send('createNote', currentNotebook.name);
   }
 
   useEffect(() => {
