@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+
 import Notebook from './Notebook';
 
 const Container = styled.div`
@@ -23,10 +26,38 @@ const NotebookList = styled.ul`
   padding: 0;
 `;
 
-export default function Sidebar({ currentNotebook, notebooks, onChangeNotebook }) {
+const Toolbar = styled.div`
+  display: flex;
+
+  h2 {
+    flex-grow: 1;
+  }
+
+  button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.5);
+    outline: none;
+
+    &:hover {
+      color: #FFFFFF;
+    }
+  }
+`;
+
+export default function Sidebar({ currentNotebook, notebooks, onChangeNotebook, onCreateNotebook, onDeleteNotebook }) {
   return (
     <Container>
-      <h2>Notebooks</h2>
+      <Toolbar>
+        <h2>Notebooks</h2>
+        <button onClick={onCreateNotebook}>
+          <FontAwesomeIcon icon={faPlus} />
+        </button>
+        <button onClick={onDeleteNotebook}>
+          <FontAwesomeIcon icon={faTrash} />
+        </button>
+      </Toolbar>    
       <NotebookList>
         {notebooks.map(notebook => (
           <Notebook

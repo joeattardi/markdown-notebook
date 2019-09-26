@@ -10,10 +10,42 @@ const frontmatter = require('./frontMatter');
 
 const NOTE_DIRECTORY = path.resolve(app.getPath('home'), 'markdown-notebook');
 const NEW_NOTE_NAME = 'New Note';
+const NEW_NOTEBOOK_NAME = 'New Notebook';
 
 function deleteNote(noteFilename) {
   debug(`Deleting note: ${noteFilename}`);
   fs.unlinkSync(noteFilename);
+}
+
+function deleteNotebook(notebook) {
+  const notebookPath = path.resolve(NOTE_DIRECTORY, notebook);
+
+  fs.readdirSync(notebookPath).forEach(note => fs.unlinkSync(path.resolve(notebookPath, note)));
+  fs.rmdirSync(notebookPath);
+}
+
+function getNewNotebookName() {
+  let counter = 1;
+  let name = NEW_NOTEBOOK_NAME;
+
+  while (fs.existsSync(path.resolve(NOTE_DIRECTORY, name))) {
+    name = `${NEW_NOTEBOOK_NAME} ${counter++}`;
+  }
+
+  return name;
+}
+
+function createNotebook() {
+  debug('Creating new notebook');
+
+  const name = getNewNotebookName();
+  fs.mkdirSync(path.resolve(NOTE_DIRECTORY, name));
+
+  return {
+    name,
+    id: slugify(name),
+    count: 0
+  };
 }
 
 function getNewNoteName(notebook) {
@@ -164,4 +196,13 @@ ipcMain.on('createNote', (event, notebook) => {
 ipcMain.on('deleteNote', (event, noteFilename) => {
   deleteNote(noteFilename);
   event.sender.send('noteDeleted');
+});
+
+ipcMain.on('createNotebook', event => {
+  event.sender.send('notebookCreated', createNotebook());
+});
+
+ipcMain.on('deleteNotebook', (event, notebook) => {
+  deleteNotebook(notebook);
+  event.sender.send('notebookDeleted');
 });

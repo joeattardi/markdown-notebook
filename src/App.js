@@ -69,12 +69,16 @@ export default function App() {
       ipcRenderer.send('getNote', note.filename);
     } else {
       setCurrentNote(null);
+      setEditing(false);
       setEditText('');
     }
   }
 
-  function selectNotebook(notebook) {
-    saveCurrentNote();
+  function selectNotebook(notebook, save = true) {
+    if (save) {
+      saveCurrentNote();
+    }
+
     setCurrentNotebook(notebook);
     ipcRenderer.send('getNotes', notebook.name);
   }
@@ -114,6 +118,32 @@ export default function App() {
 
       ipcRenderer.send('deleteNote', currentNote.filename);
     }
+  }
+
+  function createNewNotebook() {
+    ipcRenderer.once('notebookCreated', (event, notebook) => {
+      const newNotebooks = [...notebooks, notebook];
+      newNotebooks.sort((a, b) => a.name.localeCompare(b.name));
+      setNotebooks(newNotebooks);
+    });
+
+    ipcRenderer.send('createNotebook');
+  }
+
+  function deleteNotebook() {
+    ipcRenderer.once('notebookDeleted', () => {
+      const index = notebooks.findIndex(notebook => notebook.id === currentNotebook.id);
+
+      setNotebooks(notebooks.filter(notebook => notebook.id !== currentNotebook.id));
+
+      if (index === notebooks.length - 1) {
+        selectNotebook(notebooks[index - 1], false);
+      } else {
+        selectNotebook(notebooks[index + 1], false);
+      }
+    });
+
+    ipcRenderer.send('deleteNotebook', currentNotebook.name);
   }
 
   function createNewNote() {
@@ -169,7 +199,12 @@ export default function App() {
       <div>
         <Container>
           <SplitPane split="vertical" minSize={250} maxSize={500}>
-            <Sidebar notebooks={notebooks} currentNotebook={currentNotebook} onChangeNotebook={selectNotebook} />
+            <Sidebar
+              notebooks={notebooks}
+              currentNotebook={currentNotebook}
+              onCreateNotebook={createNewNotebook}
+              onDeleteNotebook={deleteNotebook}
+              onChangeNotebook={selectNotebook} />
             <div>
               <Header
                 isEditing={isEditing}
