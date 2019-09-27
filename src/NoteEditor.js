@@ -51,6 +51,12 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
     }
   }
 
+  function onKeyDown(event) {
+    if (event.key === 'Enter') {
+      onRename();
+    }
+  }
+
   useEffect(() => {
     editorRef.current.editor.focus();
     editorRef.current.editor.setCursor({ line: 0, ch: 0 });
@@ -58,7 +64,11 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
   
   return (
     <Container>
-      <TitleInput value={title} onChange={event => onTitleChange(event.target.value)} onBlur={onRename} />
+      <TitleInput
+        value={title}
+        onChange={event => onTitleChange(event.target.value)}
+        onKeyDown={onKeyDown}
+        onBlur={onRename} />
       <CodeMirror
         ref={editorRef}
         autoCursor={false}
