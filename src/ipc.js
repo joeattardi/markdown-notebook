@@ -42,3 +42,10 @@ export function deleteNote(filename) {
     ipcRenderer.send('deleteNote', filename);
   });
 }
+
+export function createNotebook() {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.once('notebookCreated', (event, notebook) => resolve(notebook));
+    ipcRenderer.send('createNotebook');
+  });
+}

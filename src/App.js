@@ -40,21 +40,8 @@ const Container = styled.div`
 
 export default function App() {
   const [notebooks, setNotebooks] = useState([]);
-  const [notes, setNotes] = useState([]);
   const [currentNotebook, setCurrentNotebook] = useState(null);
   const [currentNote, setCurrentNote] = useState(null);
-
-  function selectNote(note) {
-    saveCurrentNote();
-
-    if (note) {
-      ipcRenderer.send('getNote', note.filename);
-    } else {
-      setCurrentNote(null);
-      // setEditing(false);
-      // setEditText('');
-    }
-  }
 
   function selectNotebook(notebook, save = true) {
     if (save) {
@@ -72,16 +59,6 @@ export default function App() {
         // content: editText
       });
     }
-  }
-
-  function createNewNotebook() {
-    ipcRenderer.once('notebookCreated', (event, notebook) => {
-      const newNotebooks = [...notebooks, notebook];
-      newNotebooks.sort((a, b) => a.name.localeCompare(b.name));
-      setNotebooks(newNotebooks);
-    });
-
-    ipcRenderer.send('createNotebook');
   }
 
   function deleteNotebook() {
@@ -109,7 +86,6 @@ export default function App() {
           <Container>
             <SplitPane split="vertical" minSize={250} maxSize={500}>
               <Sidebar
-                onCreateNotebook={createNewNotebook}
                 onDeleteNotebook={deleteNotebook}
                 onChangeNotebook={selectNotebook} />
               <div>

@@ -9,6 +9,7 @@ export const SET_CURRENT_NOTE = 'SET_CURRENT_NOTE';
 export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
 export const ADD_NOTE = 'ADD_NOTE';
 export const DELETE_NOTE = 'DELETE_NOTE';
+export const ADD_NOTEBOOK = 'ADD_NOTEBOOK';
 
 const State = createContext();
 const Dispatch = createContext();
@@ -87,6 +88,15 @@ function reducer(state, action) {
         }),
         currentNote: currentNoteIndex === state.notes.length - 1 ? state.notes[currentNoteIndex - 1] : state.notes[currentNoteIndex + 1]
       };
+      case ADD_NOTEBOOK:
+        return {
+          ...state,
+          notebooks: sortBy([
+            ...state.notebooks,
+            action.payload
+          ], 'name'),
+          currentNotebook: action.payload
+        };
     default:
       return state;
   }
