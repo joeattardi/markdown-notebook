@@ -43,7 +43,7 @@ export default function NoteList() {
     <Container>
       {notes.map(note => (
         <Note
-          active={currentNote === note}
+          active={currentNote.filename === note.filename}
           key={note.id}
           note={note}
           onClick={onClickNote} />

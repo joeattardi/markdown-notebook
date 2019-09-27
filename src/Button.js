@@ -27,6 +27,11 @@ const Button = styled.button`
   border-radius: 3px;
   outline: none;
   margin: 0 0.25rem;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 Button.defaultProps = {

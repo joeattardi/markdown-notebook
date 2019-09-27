@@ -39,10 +39,10 @@ export default function Toolbar() {
       <Button variant="toolbar" data-tip="New" onClick={onClickNew}>
         <FontAwesomeIcon icon={faPlus} />
       </Button>
-      <ToggleButton onClick={onClickEdit} variant={isEditing ? 'active' : 'toolbar'} title="Edit">
+      <ToggleButton onClick={onClickEdit} variant={isEditing ? 'active' : 'toolbar'} title="Edit" disabled={!currentNote}>
         <FontAwesomeIcon icon={faPencilAlt} />
       </ToggleButton>
-      <Button variant="toolbar" data-tip="Delete" onClick={onClickDelete}>
+      <Button variant="toolbar" data-tip="Delete" onClick={onClickDelete} disabled={!currentNote}>
         <FontAwesomeIcon icon={faTrash} />
       </Button>
     </div>
