@@ -3,7 +3,6 @@ import { debounce } from 'debounce';
 const { ipcRenderer } = window.require('electron');
 
 export function saveNote(note) {
-  console.log('Saving note');
   ipcRenderer.send('saveNote', note);
 }
 
@@ -11,10 +10,7 @@ export const debouncedSave = debounce(saveNote, 500);
 
 export function getNote(filename) {
   return new Promise((resolve, reject) => {
-    ipcRenderer.once('note', (event, note) => {
-      resolve(note);
-    });
-
+    ipcRenderer.once('note', (event, note) => resolve(note));
     ipcRenderer.send('getNote', filename);
   });
 }
