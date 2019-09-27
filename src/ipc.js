@@ -49,3 +49,10 @@ export function createNotebook() {
     ipcRenderer.send('createNotebook');
   });
 }
+
+export function deleteNotebook(notebook) {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.once('notebookDeleted', event => resolve());
+    ipcRenderer.send('deleteNotebook', notebook);
+  });
+}

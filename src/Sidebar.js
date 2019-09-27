@@ -8,7 +8,7 @@ import Notebook from './Notebook';
 
 import * as ipc from './ipc';
 
-import { SET_CURRENT_NOTEBOOK, SET_NOTEBOOKS, SET_NOTES, ADD_NOTEBOOK } from './store/notes';
+import { SET_CURRENT_NOTEBOOK, SET_NOTEBOOKS, SET_NOTES, ADD_NOTEBOOK, DELETE_NOTEBOOK } from './store/notes';
 import { Notes } from './store';
 
 const Container = styled.div`
@@ -51,7 +51,7 @@ const Toolbar = styled.div`
   }
 `;
 
-export default function Sidebar({ onDeleteNotebook }) {
+export default function Sidebar() {
   const { notebooks, currentNotebook } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
@@ -62,6 +62,11 @@ export default function Sidebar({ onDeleteNotebook }) {
   async function onClickNew() {
     const newNotebook = await ipc.createNotebook();
     notesDispatch({ type: ADD_NOTEBOOK, payload: newNotebook });
+  }
+
+  async function onClickDelete() {
+    await ipc.deleteNotebook(currentNotebook.name);
+    notesDispatch({ type: DELETE_NOTEBOOK });
   }
 
   useEffect(() => {
@@ -91,7 +96,7 @@ export default function Sidebar({ onDeleteNotebook }) {
         <button onClick={onClickNew} data-tip="New Notebook">
           <FontAwesomeIcon icon={faPlus} />
         </button>
-        <button onClick={onDeleteNotebook}>
+        <button onClick={onClickDelete} data-tip="Delete Notebook">
           <FontAwesomeIcon icon={faTrash} />
         </button>
       </Toolbar>    

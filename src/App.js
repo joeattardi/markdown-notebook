@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import SplitPane from 'react-split-pane';
 import ReactTooltip from 'react-tooltip'
@@ -10,8 +10,6 @@ import NoteList from './NoteList';
 import Sidebar from './Sidebar';
 
 import { Store } from './store';
-
-const { ipcRenderer } = window.require('electron');
 
 const theme = {
   headerBackground: '#EEEEEE',
@@ -39,44 +37,6 @@ const Container = styled.div`
 `;
 
 export default function App() {
-  const [notebooks, setNotebooks] = useState([]);
-  const [currentNotebook, setCurrentNotebook] = useState(null);
-  const [currentNote, setCurrentNote] = useState(null);
-
-  function selectNotebook(notebook, save = true) {
-    if (save) {
-      saveCurrentNote();
-    }
-
-    setCurrentNotebook(notebook);
-    ipcRenderer.send('getNotes', notebook.name);
-  }
-
-  function saveCurrentNote() {
-    if (currentNote) {
-      ipcRenderer.send('saveNote', {
-        ...currentNote,
-        // content: editText
-      });
-    }
-  }
-
-  function deleteNotebook() {
-    ipcRenderer.once('notebookDeleted', () => {
-      const index = notebooks.findIndex(notebook => notebook.id === currentNotebook.id);
-
-      setNotebooks(notebooks.filter(notebook => notebook.id !== currentNotebook.id));
-
-      if (index === notebooks.length - 1) {
-        selectNotebook(notebooks[index - 1], false);
-      } else {
-        selectNotebook(notebooks[index + 1], false);
-      }
-    });
-
-    ipcRenderer.send('deleteNotebook', currentNotebook.name);
-  }
-
   return (
     <Store>
       <ThemeProvider theme={theme}>
@@ -85,9 +45,7 @@ export default function App() {
         <div>
           <Container>
             <SplitPane split="vertical" minSize={250} maxSize={500}>
-              <Sidebar
-                onDeleteNotebook={deleteNotebook}
-                onChangeNotebook={selectNotebook} />
+              <Sidebar />
               <div>
                 <Header />
                 <SplitPane split="vertical" minSize={250} maxSize={500}>
