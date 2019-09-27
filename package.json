@@ -27,7 +27,7 @@
     "yaml": "^1.7.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=4000 BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
