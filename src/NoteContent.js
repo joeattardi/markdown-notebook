@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import NoteEditor from './NoteEditor';
 import NoteView from './NoteView';
 
-import { debouncedSave, saveNote, renameNote } from './ipc';
+import { debouncedSave, renameNote } from './ipc';
 
 import { RENAME_NOTE, SET_NOTE_CONTENT, SET_NOTE_TITLE } from './store/notes';
 import { App, Notes } from './store';
