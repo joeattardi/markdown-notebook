@@ -3,12 +3,12 @@ const fs = require('fs-extra');
 const path = require('path');
 const readline = require('readline');
 
-const { app, ipcMain } = require('electron');
+const { ipcMain } = require('electron');
 const slugify = require('slugify');
 
+const { NOTE_DIRECTORY } = require('./config');
 const frontmatter = require('./frontMatter');
 
-const NOTE_DIRECTORY = path.resolve(app.getPath('home'), 'markdown-notebook');
 const NEW_NOTE_NAME = 'New Note';
 const NEW_NOTEBOOK_NAME = 'New Notebook';
 
