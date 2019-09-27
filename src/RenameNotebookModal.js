@@ -36,11 +36,16 @@ const ButtonContainer = styled.div`
 `;
 
 const Content = styled.div`
-  margin: 0.5rem;
+  margin: 0.5rem 0;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 0.9rem;
 `;
 
 export default function RenameNotebookModal() {
-  const { currentNotebook } = useContext(Notes.State);
+  const { currentNotebook, notebooks } = useContext(Notes.State);
   const { isRenamingNotebook } = useContext(App.State);
   
   const notesDispatch = useContext(Notes.Dispatch);
@@ -66,7 +71,20 @@ export default function RenameNotebookModal() {
   }
 
   function isFormValid() {
-    return !!nameValue;
+    return !getErrorMessage();
+  }
+
+  function getErrorMessage() {
+    if (!nameValue) {
+      return 'Name is required.';
+    }
+
+    const notebookWithName = notebooks.find(notebook => notebook.name.toLowerCase() === nameValue.toLowerCase());
+    if (notebookWithName && notebookWithName.id !== currentNotebook.id) {
+      return 'A notebook already exists with that name.';
+    }
+
+    return null;
   }
 
   useEffect(() => {
@@ -88,6 +106,7 @@ export default function RenameNotebookModal() {
   return (
     <StyledModal isOpen={isRenamingNotebook} onEscapeKeydown={cancel}>
       <h1>Rename Notebook</h1>
+      <ErrorMessage>{getErrorMessage() || <span>&nbsp;</span>}</ErrorMessage>
       <form onSubmit={submitForm}>
         <Content>
           <input
