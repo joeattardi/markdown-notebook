@@ -5,7 +5,7 @@ import Note from './Note';
 
 import { getNote, saveNote } from './ipc';
 
-import { SET_CURRENT_NOTE, SET_NOTE_CONTENT } from './store/notes';
+import { SET_CURRENT_NOTE, SET_NOTE_CONTENT, SET_NOTE_TITLE } from './store/notes';
 import { Notes } from './store';
 
 const Container = styled.div`
@@ -31,6 +31,7 @@ export default function NoteList() {
       if (currentNote) {
         const note = await getNote(currentNote.filename);
         notesDispatch({ type: SET_NOTE_CONTENT, payload: note.content });
+        notesDispatch({ type: SET_NOTE_TITLE, payload: note.title });
       } else {
         notesDispatch({ type: SET_NOTE_CONTENT, payload: '' });
       }
@@ -44,7 +45,7 @@ export default function NoteList() {
       {notes.map(note => (
         <Note
           active={currentNote.filename === note.filename}
-          key={note.id}
+          key={note.filename}
           note={note}
           onClick={onClickNote} />
       ))}

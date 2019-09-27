@@ -70,13 +70,13 @@ function createNote(notebook) {
   debug(`Creating new note in notebook: ${notebook}`);
 
   const newNoteName = getNewNoteName(notebook);
-  const newNoteSlug = slugify(newNoteName);
-  const newNoteFilename = path.resolve(NOTE_DIRECTORY, notebook, newNoteSlug.toLowerCase() + '.md');
+  const newNoteSlug = slugify(newNoteName).toLowerCase();
+  const newNoteFilename = path.resolve(NOTE_DIRECTORY, notebook, newNoteSlug + '.md');
 
   const note = {
     title: newNoteName,
     filename: newNoteFilename,
-    content: '# ' + newNoteName
+    content: ''
   }
 
   saveNote(note);
@@ -120,6 +120,34 @@ function getNote(filename) {
     ...noteData.attributes,
     content: noteData.body
   };
+}
+
+function getUniqueFilename(notebook, baseName) {
+  let counter = 1;
+  let name = baseName;
+  let filename = path.resolve(NOTE_DIRECTORY, notebook, slugify(name).toLowerCase() + '.md');
+
+  while (fs.existsSync(filename)) {
+    name = `${name} ${counter++}`;
+    filename = path.resolve(NOTE_DIRECTORY, notebook, slugify(name).toLowerCase() + '.md');
+  }
+
+  return filename;
+}
+
+function renameNote(notebook, note, newName) {
+  debug(`Renaming note "${note.title} in notebook "${notebook}" to "${newName}"`);
+
+  const newNote = {
+    title: newName,
+    filename: getUniqueFilename(notebook, newName),
+    content: note.content
+  };
+  
+  fs.renameSync(note.filename, newNote.filename);
+  saveNote(newNote);
+
+  return newNote.filename;
 }
 
 function saveNote(note) {
@@ -216,4 +244,8 @@ ipcMain.on('deleteNotebook', (event, notebook) => {
 ipcMain.on('renameNotebook', (event, notebook, newName) => {
   renameNotebook(notebook, newName);
   event.sender.send('notebookRenamed');
+});
+
+ipcMain.on('renameNote', (event, notebook, note, newName) => {
+  event.sender.send('noteRenamed', renameNote(notebook, note, newName));
 });

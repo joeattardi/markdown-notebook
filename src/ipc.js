@@ -63,3 +63,10 @@ export function renameNotebook(notebook, newName) {
     ipcRenderer.send('renameNotebook', notebook, newName);
   });
 }
+
+export function renameNote(notebook, note, newName) {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.once('noteRenamed', (event, filename) => resolve(filename));
+    ipcRenderer.send('renameNote', notebook, note, newName);
+  });
+}

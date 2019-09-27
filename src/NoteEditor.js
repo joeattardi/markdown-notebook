@@ -24,7 +24,24 @@ const Container = styled.div`
   }
 `;
 
-export default function NoteEditor({ content, onChange }) {
+const TitleInput = styled.input`
+  font-size: 2rem;
+  border: none;
+  border-bottom: 1px solid #CCCCCC;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
+  outline: none;
+  padding: 0.5rem;
+  font-family: monospace;
+  font-weight: bold;
+
+  &:focus {
+    border-bottom-color: ${({theme}) => theme.brandColor};
+  }
+`;
+
+export default function NoteEditor({ title, content, onChange, onTitleChange, onRename }) {
   const editorRef = useRef(null);
   const { currentNote } = useContext(Notes.State);
 
@@ -41,13 +58,13 @@ export default function NoteEditor({ content, onChange }) {
   
   return (
     <Container>
+      <TitleInput value={title} onChange={event => onTitleChange(event.target.value)} onBlur={onRename} />
       <CodeMirror
         ref={editorRef}
         autoCursor={false}
         onChange={onEditorChange}
         options={{
-          mode: 'markdown',
-          autofocus: true
+          mode: 'markdown'
         }}
         value={content} />
       </Container>

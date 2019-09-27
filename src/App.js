@@ -9,6 +9,7 @@ import Main from './Main';
 import { Store } from './store';
 
 const theme = {
+  brandColor: '#294E72',
   headerBackground: '#EEEEEE',
   sidebarBackground: '#294E72',
   sidebarHoverBackground: 'rgba(255, 255, 255, 0.2)',

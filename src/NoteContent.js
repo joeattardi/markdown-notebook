@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
-import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 
 import NoteEditor from './NoteEditor';
+import NoteView from './NoteView';
 
-import { debouncedSave } from './ipc';
+import { debouncedSave, saveNote, renameNote } from './ipc';
 
-import { SET_NOTE_CONTENT } from './store/notes';
+import { RENAME_NOTE, SET_NOTE_CONTENT, SET_NOTE_TITLE } from './store/notes';
 import { App, Notes } from './store';
 
 const Container = styled.div`
@@ -14,13 +14,17 @@ const Container = styled.div`
   height: 100%;
   overflow-y: scroll;
 
-  h1, h2, h3, h4, h5 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
     margin: 0;
   }
 `;
 
 export default function NoteContent() {
-  const { currentNote, noteContent } = useContext(Notes.State);
+  const { currentNotebook, currentNote, noteContent, noteTitle } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
   const { isEditing } = useContext(App.State);
@@ -34,9 +38,40 @@ export default function NoteContent() {
     notesDispatch({ type: SET_NOTE_CONTENT, payload: content });
   }
 
+  function onTitleChange(title) {
+    notesDispatch({ type: SET_NOTE_TITLE, payload: title });
+  }
+
+  async function onRename() {
+    // saveNote({
+    //   ...currentNote,
+    //   title: noteTitle,
+    //   content: noteContent
+    // });
+    const newFilename = await renameNote(currentNotebook.name, {
+      ...currentNote,
+      content: noteContent
+    }, noteTitle);
+    notesDispatch({ type: RENAME_NOTE, payload: {
+      title: noteTitle,
+      filename: newFilename
+    }});
+  }
+
   return (
     <Container>
-      {noteContent ? isEditing ? <NoteEditor content={noteContent} onChange={onNoteChange} /> : <ReactMarkdown source={noteContent} /> : null}
+      {currentNote ? (
+        isEditing ? (
+          <NoteEditor
+            title={noteTitle}
+            content={noteContent}
+            onTitleChange={onTitleChange}
+            onChange={onNoteChange} 
+            onRename={onRename} />
+        ) : (
+          <NoteView title={currentNote.title} content={noteContent} />
+        )
+      ) : null}
     </Container>
   );
 }

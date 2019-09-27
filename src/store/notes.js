@@ -8,8 +8,10 @@ export const SET_NOTEBOOKS = 'SET_NOTEBOOKS';
 export const SET_CURRENT_NOTEBOOK = 'SET_CURRENT_NOTEBOOK';
 export const SET_CURRENT_NOTE = 'SET_CURRENT_NOTE';
 export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
+export const SET_NOTE_TITLE = 'SET_NOTE_TITLE';
 export const ADD_NOTE = 'ADD_NOTE';
 export const DELETE_NOTE = 'DELETE_NOTE';
+export const RENAME_NOTE = 'RENAME_NOTE';
 export const ADD_NOTEBOOK = 'ADD_NOTEBOOK';
 export const DELETE_NOTEBOOK = 'DELETE_NOTEBOOK';
 export const RENAME_NOTEBOOK = 'RENAME_NOTEBOOK';
@@ -22,7 +24,8 @@ const initialState = {
   currentNotebook: null,
   notes: [],
   currentNote: null,
-  noteContent: ''
+  noteContent: '',
+  noteTitle: ''
 };
 
 function reducer(state, action) {
@@ -47,7 +50,8 @@ function reducer(state, action) {
     case SET_CURRENT_NOTE:
       return {
         ...state,
-        currentNote: action.payload
+        currentNote: action.payload,
+        noteTitle: action.payload.title
       };
     case SET_NOTE_CONTENT:
       return {
@@ -91,6 +95,31 @@ function reducer(state, action) {
         }),
         currentNote: currentNoteIndex === state.notes.length - 1 ? state.notes[currentNoteIndex - 1] : state.notes[currentNoteIndex + 1]
       };
+      case SET_NOTE_TITLE:
+        return {
+          ...state,
+          noteTitle: action.payload
+        };
+      case RENAME_NOTE:
+        return {
+          ...state,
+          notes: sortBy(state.notes.map(note => {
+            if (note.filename === state.currentNote.filename) {
+              return {
+                ...note,
+                ...action.payload,
+                id: slugify(action.payload.title).toLowerCase()
+              };
+            }
+
+            return note;
+          }), 'title'),
+          currentNote: {
+            ...state.currentNote,
+            ...action.payload,
+            id: slugify(action.payload.title).toLowerCase()
+          }
+        };
       case ADD_NOTEBOOK:
         return {
           ...state,
