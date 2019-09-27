@@ -31,7 +31,7 @@ const Count = styled.div`
 export default function Notebook({ notebook, active, onClick }) {
   return (
     <Container className={active ? 'active' : ''} onClick={() => onClick(notebook)}>
-      <Name><FontAwesomeIcon icon={faBook} /> {notebook.name}</Name>
+      <Name><FontAwesomeIcon icon={faBook} style={{ marginRight: '0.25rem' }}/> {notebook.name}</Name>
       <Count>{notebook.count}</Count>
     </Container>
   );
