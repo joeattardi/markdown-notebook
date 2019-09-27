@@ -58,7 +58,7 @@ function reducer(state, action) {
         notes: sortBy([
           ...state.notes,
           action.payload
-        ], 'filename'),
+        ], 'title'),
         currentNote: action.payload,
         notebooks: state.notebooks.map(notebook => {
           if (notebook.id === state.currentNotebook.id) {

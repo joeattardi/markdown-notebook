@@ -101,6 +101,7 @@ async function getNotes(notebook) {
   debug(`Getting notes for notebook: ${notebook}`);
   const noteFiles = await fs.readdir(path.resolve(NOTE_DIRECTORY, notebook));
   const notes = await Promise.all(noteFiles.map(filename => getNoteData(notebook, filename)));
+  notes.sort((a, b) => a.title.localeCompare(b.title));
   return notes;
 }
 
