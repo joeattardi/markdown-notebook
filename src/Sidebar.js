@@ -6,10 +6,10 @@ import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import Notebook from './Notebook';
 
+import * as ipc from './ipc';
+
 import { SET_CURRENT_NOTEBOOK, SET_NOTEBOOKS, SET_NOTES } from './store/notes';
 import { Notes } from './store';
-
-const { ipcRenderer } = window.require('electron');
 
 const Container = styled.div`
   background: ${({theme}) => theme.sidebarBackground};
@@ -60,21 +60,23 @@ export default function Sidebar({ onCreateNotebook, onDeleteNotebook }) {
   }
 
   useEffect(() => {
-    ipcRenderer.once('notebooks', (event, notebooks) => {
+    async function getNotebooks() {
+      const notebooks = await ipc.getNotebooks();
       notesDispatch({ type: SET_NOTEBOOKS, payload: notebooks });
-    });
+    }
 
-    ipcRenderer.send('getNotebooks');
+    getNotebooks();
   }, [notesDispatch]);
 
   useEffect(() => {
-    if (currentNotebook) {
-      ipcRenderer.once('notes', (event, notes) => {
+    async function getNotes() {
+      if (currentNotebook) {
+        const notes = await ipc.getNotes(currentNotebook.name);
         notesDispatch({ type: SET_NOTES, payload: notes });
-      });
-
-      ipcRenderer.send('getNotes', currentNotebook.name);
+      }
     }
+
+    getNotes();
   }, [notesDispatch, currentNotebook]);
 
   return (

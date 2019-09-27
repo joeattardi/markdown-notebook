@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 import Note from './Note';
 
+import { getNote, saveNote } from './ipc';
+
 import { SET_CURRENT_NOTE, SET_NOTE_CONTENT } from './store/notes';
 import { Notes } from './store';
-
-const { ipcRenderer } = window.require('electron');
 
 const Container = styled.div`
   border-right: 1px solid #CCCCCC;
@@ -18,7 +18,7 @@ export default function NoteList() {
   const notesDispatch = useContext(Notes.Dispatch);
 
   function onClickNote(note) {
-    ipcRenderer.send('saveNote', {
+    saveNote({
       ...currentNote,
       content: noteContent
     });
@@ -27,15 +27,16 @@ export default function NoteList() {
   }
 
   useEffect(() => {
-    if (currentNote) {
-      ipcRenderer.once('note', (event, note) => {
+    async function setNoteContent() {
+      if (currentNote) {
+        const note = await getNote(currentNote.filename);
         notesDispatch({ type: SET_NOTE_CONTENT, payload: note.content });
-      });
-
-      ipcRenderer.send('getNote', currentNote.filename);
-    } else {
-      notesDispatch({ type: SET_NOTE_CONTENT, payload: '' });
+      } else {
+        notesDispatch({ type: SET_NOTE_CONTENT, payload: '' });
+      }
     }
+
+    setNoteContent();
   }, [notesDispatch, currentNote]);
 
   return (
