@@ -22,6 +22,10 @@ const Container = styled.li`
 
 const Name = styled.div`
   flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 0.25rem;
 `;
 
 const Count = styled.div`
@@ -30,7 +34,7 @@ const Count = styled.div`
 
 export default function Notebook({ notebook, active, onClick }) {
   return (
-    <Container className={active ? 'active' : ''} onClick={() => onClick(notebook)}>
+    <Container className={active ? 'active' : ''} onClick={() => onClick(notebook)} title={notebook.name}>
       <Name><FontAwesomeIcon icon={faBook} style={{ marginRight: '0.25rem' }}/> {notebook.name}</Name>
       <Count>{notebook.count}</Count>
     </Container>

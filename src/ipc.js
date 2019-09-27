@@ -70,3 +70,10 @@ export function renameNote(notebook, note, newName) {
     ipcRenderer.send('renameNote', notebook, note, newName);
   });
 }
+
+export function confirmDeleteNotebook(notebook) {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.once('confirmDeleteNotebook', (event, result) => resolve(result));
+    ipcRenderer.send('confirmDeleteNotebook', notebook);
+  });
+}

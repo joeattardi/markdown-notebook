@@ -43,7 +43,7 @@ export default function Toolbar() {
 
   return (
     <Container>
-      <Button variant="toolbar" data-tip="New" onClick={onClickNew}>
+      <Button variant="toolbar" data-tip="New" onClick={onClickNew} disabled={!currentNotebook}>
         <FontAwesomeIcon icon={faPlus} />
       </Button>
       <ToggleButton onClick={onClickEdit} variant={isEditing ? 'active' : 'toolbar'} title="Edit" disabled={!currentNote}>

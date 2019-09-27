@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 
 const debug = require('debug')('markdown-notebook:main');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 
 const isDev = require('electron-is-dev');
 const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
@@ -57,4 +57,16 @@ function createSampleData() {
 app.on('ready', () => {
   checkDataDirectory();
   createWindow();
+});
+
+ipcMain.on('confirmDeleteNotebook', (event, notebook) => {
+  const result = dialog.showMessageBoxSync(mainWindow, {
+    type: 'question',
+    buttons: ['Cancel', 'Confirm'],
+    message: 'Delete Notebook?',
+    detail: `This will delete all notes in the notebook "${notebook}" and cannot be undone.`,
+    defaultId: 1
+  });
+
+  event.sender.send('confirmDeleteNotebook', result === 1);
 });

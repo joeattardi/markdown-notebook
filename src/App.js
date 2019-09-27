@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { SnackbarProvider } from 'react-snackbar-alert';
 import ReactTooltip from 'react-tooltip'
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { ModalProvider } from 'styled-react-modal'
@@ -29,7 +30,9 @@ export default function App() {
         <ModalProvider>
           <GlobalStyle />
           <ReactTooltip effect="solid" delayShow={250} />
-          <Main />
+          <SnackbarProvider progressBar={false}>
+            <Main />
+          </SnackbarProvider>
         </ModalProvider>
       </ThemeProvider>
     </Store>
