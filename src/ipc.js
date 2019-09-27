@@ -28,3 +28,10 @@ export function getNotes(notebook) {
     ipcRenderer.send('getNotes', notebook);
   });
 }
+
+export function createNote(notebook) {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.once('noteCreated', (event, note) => resolve(note));
+    ipcRenderer.send('createNote', notebook);
+  });
+}

@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 import NoteEditor from './NoteEditor';
 
-import { debouncedSave, saveNote } from './ipc';
+import { debouncedSave } from './ipc';
 
 import { SET_NOTE_CONTENT } from './store/notes';
-import { Notes } from './store';
+import { App, Notes } from './store';
 
 const Container = styled.div`
   padding: 0.5rem;
@@ -19,9 +19,11 @@ const Container = styled.div`
   }
 `;
 
-export default function NoteContent({ isEditing }) {
+export default function NoteContent() {
   const { currentNote, noteContent } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
+
+  const { isEditing } = useContext(App.State);
 
   function onNoteChange(content) {
     debouncedSave({

@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import SplitPane from 'react-split-pane';
 import ReactTooltip from 'react-tooltip'
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
-import { useDebouncedCallback } from 'use-debounce';
 
 import Header from './Header';
 import NoteContent from './NoteContent';
@@ -43,24 +42,7 @@ export default function App() {
   const [notebooks, setNotebooks] = useState([]);
   const [notes, setNotes] = useState([]);
   const [currentNotebook, setCurrentNotebook] = useState(null);
-  const [isEditing, setEditing] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
-
-  const [autoSave] = useDebouncedCallback(() => {
-    saveCurrentNote();
-  }, 1000);
-
-  function toggleEditing() {
-    setEditing(!isEditing);
-    setCurrentNote({
-      ...currentNote,
-    });
-  }
-
-  function updateNote(content) {
-    // setEditText(content);
-    autoSave();
-  }
 
   function selectNote(note) {
     saveCurrentNote();
@@ -69,7 +51,7 @@ export default function App() {
       ipcRenderer.send('getNote', note.filename);
     } else {
       setCurrentNote(null);
-      setEditing(false);
+      // setEditing(false);
       // setEditText('');
     }
   }
@@ -146,33 +128,6 @@ export default function App() {
     ipcRenderer.send('deleteNotebook', currentNotebook.name);
   }
 
-  function createNewNote() {
-    ipcRenderer.once('noteCreated', (event, note) => {
-      setNotes([
-        ...notes,
-        note
-      ]);
-
-      setCurrentNotebook({
-        ...currentNotebook,
-        count: currentNotebook.count + 1
-      });
-
-      setNotebooks(notebooks.map(notebook => {
-        if (notebook.id === currentNotebook.id) {
-          return {...currentNotebook, count: currentNotebook.count + 1};
-        }
-
-        return notebook;
-      }));
-
-      selectNote(note);
-      setEditing(true);
-    });
-
-    ipcRenderer.send('createNote', currentNotebook.name);
-  }
-
   return (
     <Store>
       <ThemeProvider theme={theme}>
@@ -187,13 +142,10 @@ export default function App() {
                 onChangeNotebook={selectNotebook} />
               <div>
                 <Header
-                  isEditing={isEditing}
-                  onEditToggle={toggleEditing}
-                  onNew={createNewNote}
                   onDelete={deleteNote} />
                 <SplitPane split="vertical" minSize={250} maxSize={500}>
                   <NoteList />
-                  <NoteContent isEditing={isEditing} />
+                  <NoteContent />
                 </SplitPane>
               </div>
             </SplitPane>

@@ -1,10 +1,13 @@
 import React, { createContext, useReducer } from 'react';
 
+import { sortBy } from '../util';
+
 export const SET_NOTES = 'SET_NOTES';
 export const SET_NOTEBOOKS = 'SET_NOTEBOOKS';
 export const SET_CURRENT_NOTEBOOK = 'SET_CURRENT_NOTEBOOK';
 export const SET_CURRENT_NOTE = 'SET_CURRENT_NOTE';
 export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
+export const ADD_NOTE = 'ADD_NOTE';
 
 const State = createContext();
 const Dispatch = createContext();
@@ -45,6 +48,25 @@ function reducer(state, action) {
       return {
         ...state,
         noteContent: action.payload
+      };
+    case ADD_NOTE:
+      return {
+        ...state,
+        notes: sortBy([
+          ...state.notes,
+          action.payload
+        ], 'filename'),
+        currentNote: action.payload,
+        notebooks: state.notebooks.map(notebook => {
+          if (notebook.id === state.currentNotebook.id) {
+            return {
+              ...notebook,
+              count: notebook.count + 1
+            };
+          }
+
+          return notebook;
+        })
       };
     default:
       return state;
