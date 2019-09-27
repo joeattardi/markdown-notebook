@@ -32,7 +32,7 @@ export default function NoteContent() {
   function onNoteChange(content) {
     debouncedSave({
       ...currentNote,
-      content: noteContent
+      content
     });
 
     notesDispatch({ type: SET_NOTE_CONTENT, payload: content });
