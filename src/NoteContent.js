@@ -6,6 +6,7 @@ import NoteView from './NoteView';
 
 import { debouncedSave, renameNote } from './ipc';
 
+import { SET_EDITING } from './store/app';
 import { RENAME_NOTE, SET_NOTE_CONTENT, SET_NOTE_TITLE } from './store/notes';
 import { App, Notes } from './store';
 
@@ -27,6 +28,7 @@ export default function NoteContent() {
   const { currentNotebook, currentNote, noteContent, noteTitle } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
+  const appDispatch = useContext(App.Dispatch);
   const { isEditing } = useContext(App.State);
 
   function onNoteChange(content) {
@@ -42,12 +44,11 @@ export default function NoteContent() {
     notesDispatch({ type: SET_NOTE_TITLE, payload: title });
   }
 
+  function onExitEdit() {
+    appDispatch({ type: SET_EDITING, payload: false });
+  }
+
   async function onRename() {
-    // saveNote({
-    //   ...currentNote,
-    //   title: noteTitle,
-    //   content: noteContent
-    // });
     const newFilename = await renameNote(currentNotebook.name, {
       ...currentNote,
       content: noteContent
@@ -66,6 +67,7 @@ export default function NoteContent() {
             title={noteTitle}
             content={noteContent}
             onTitleChange={onTitleChange}
+            onExitEdit={onExitEdit}
             onChange={onNoteChange} 
             onRename={onRename} />
         ) : (

@@ -41,7 +41,7 @@ const TitleInput = styled.input`
   }
 `;
 
-export default function NoteEditor({ title, content, onChange, onTitleChange, onRename }) {
+export default function NoteEditor({ title, content, onChange, onTitleChange, onRename, onExitEdit }) {
   const editorRef = useRef(null);
   const { currentNote } = useContext(Notes.State);
 
@@ -51,9 +51,15 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
     }
   }
 
-  function onKeyDown(event) {
+  function onTitleKeyDown(event) {
     if (event.key === 'Enter') {
       onRename();
+    }
+  }
+
+  function onKeyDown(event) {
+    if (event.key === 'Escape') {
+      onExitEdit();
     }
   }
 
@@ -63,11 +69,11 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
   }, [currentNote]);
   
   return (
-    <Container>
+    <Container onKeyDown={onKeyDown}>
       <TitleInput
         value={title}
         onChange={event => onTitleChange(event.target.value)}
-        onKeyDown={onKeyDown}
+        onKeyDown={onTitleKeyDown}
         onBlur={onRename} />
       <CodeMirror
         ref={editorRef}
