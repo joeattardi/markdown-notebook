@@ -9,6 +9,8 @@ import { SET_RENAMING_NOTEBOOK } from './store/app';
 import { RENAME_NOTEBOOK } from './store/notes';
 import { App, Notes } from './store';
 
+import { renameNotebook } from './ipc';
+
 const StyledModal = Modal.styled`
   width: 20rem;
   background: #FFFFFF;
@@ -50,36 +52,54 @@ export default function RenameNotebookModal() {
     appDispatch({ type: SET_RENAMING_NOTEBOOK, payload: false });
   }
 
-  function save() {
+  function cancel() {
+    closeModal();
+    setNameValue(currentNotebook.name);
+  }
+
+  async function submitForm(event) {
+    event.preventDefault();
+
+    await renameNotebook(currentNotebook.name, nameValue);
     notesDispatch({ type: RENAME_NOTEBOOK, payload: nameValue });
     closeModal();
   }
 
-  useEffect(() => setNameValue(currentNotebook ? currentNotebook.name : ''), [currentNotebook]);
+  function isFormValid() {
+    return !!nameValue;
+  }
+
+  useEffect(() => {
+    if (currentNotebook) {
+      setNameValue(currentNotebook.name);
+    }
+  }, [currentNotebook]);
 
   const inputField = useRef(null);
 
   useEffect(() => {
     setTimeout(() => {
       if (isRenamingNotebook) {
-        inputField.current.focus();
+        inputField.current.select();
       }
     });
   }, [isRenamingNotebook]);
-
+  
   return (
-    <StyledModal isOpen={isRenamingNotebook} onEscapeKeydown={closeModal}>
+    <StyledModal isOpen={isRenamingNotebook} onEscapeKeydown={cancel}>
       <h1>Rename Notebook</h1>
-      <Content>
-        <input
-          value={nameValue}
-          onChange={event => setNameValue(event.target.value)}
-          ref={inputField} />
-      </Content>
-      <ButtonContainer>
-        <Button onClick={closeModal}>Cancel</Button>
-        <Button variant="active" onClick={save}>Save</Button>
-      </ButtonContainer>
+      <form onSubmit={submitForm}>
+        <Content>
+          <input
+            value={nameValue}
+            onChange={event => setNameValue(event.target.value)}
+            ref={inputField} />
+        </Content>
+        <ButtonContainer>
+          <Button type="button" onClick={cancel}>Cancel</Button>
+          <Button type="submit" variant="active" disabled={!isFormValid()}>Save</Button>
+        </ButtonContainer>
+      </form>
     </StyledModal>
   );
 }

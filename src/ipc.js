@@ -56,3 +56,10 @@ export function deleteNotebook(notebook) {
     ipcRenderer.send('deleteNotebook', notebook);
   });
 }
+
+export function renameNotebook(notebook, newName) {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.once('notebookRenamed', event => resolve());
+    ipcRenderer.send('renameNotebook', notebook, newName);
+  });
+}

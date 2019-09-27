@@ -1,4 +1,5 @@
 import React, { createContext, useReducer } from 'react';
+import slugify from 'slugify';
 
 import { sortBy } from '../util';
 
@@ -109,13 +110,21 @@ function reducer(state, action) {
       case RENAME_NOTEBOOK:
         return {
           ...state,
-          notebooks: state.notebooks.map(notebook => {
+          notebooks: sortBy(state.notebooks.map(notebook => {
             if (notebook.id === state.currentNotebook.id) {
-              return { ...notebook, name: action.payload }
+              return { 
+                ...notebook, 
+                name: action.payload,
+                id: slugify(action.payload)
+              }
             }
-
             return notebook;
-          })
+          }), 'name'),
+          currentNotebook: {
+            ...state.currentNotebook,
+            name: action.payload,
+            id: slugify(action.payload)
+          }
         };
     default:
       return state;

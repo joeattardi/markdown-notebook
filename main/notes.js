@@ -17,6 +17,11 @@ function deleteNote(noteFilename) {
   fs.unlinkSync(noteFilename);
 }
 
+function renameNotebook(notebook, newName) {
+  debug(`Renaming notebook "${notebook}" to "${newName}"`);
+  fs.renameSync(path.resolve(NOTE_DIRECTORY, notebook), path.resolve(NOTE_DIRECTORY, newName));
+}
+
 function deleteNotebook(notebook) {
   const notebookPath = path.resolve(NOTE_DIRECTORY, notebook);
 
@@ -206,4 +211,9 @@ ipcMain.on('createNotebook', event => {
 ipcMain.on('deleteNotebook', (event, notebook) => {
   deleteNotebook(notebook);
   event.sender.send('notebookDeleted');
+});
+
+ipcMain.on('renameNotebook', (event, notebook, newName) => {
+  renameNotebook(notebook, newName);
+  event.sender.send('notebookRenamed');
 });
