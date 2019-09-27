@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 import Modal from 'styled-react-modal';
 
 import Button from './Button';
+
+import { SET_RENAMING_NOTEBOOK } from './store/app';
+import { RENAME_NOTEBOOK } from './store/notes';
+import { App, Notes } from './store';
 
 const StyledModal = Modal.styled`
   width: 20rem;
@@ -33,22 +37,38 @@ const Content = styled.div`
   margin: 0.5rem;
 `;
 
-export default function RenameNotebookModal({ isOpen, currentNotebook, onCancel, onSave }) {
+export default function RenameNotebookModal() {
+  const { currentNotebook } = useContext(Notes.State);
+  const { isRenamingNotebook } = useContext(App.State);
+  
+  const notesDispatch = useContext(Notes.Dispatch);
+  const appDispatch = useContext(App.Dispatch);
+
   const [nameValue, setNameValue] = useState(currentNotebook ? currentNotebook.name : '');
+
+  function closeModal() {
+    appDispatch({ type: SET_RENAMING_NOTEBOOK, payload: false });
+  }
+
+  function save() {
+    notesDispatch({ type: RENAME_NOTEBOOK, payload: nameValue });
+    closeModal();
+  }
 
   useEffect(() => setNameValue(currentNotebook ? currentNotebook.name : ''), [currentNotebook]);
 
   const inputField = useRef(null);
+
   useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => {
+    setTimeout(() => {
+      if (isRenamingNotebook) {
         inputField.current.focus();
-      });
-    }
-  }, [isOpen]);
+      }
+    });
+  }, [isRenamingNotebook]);
 
   return (
-    <StyledModal isOpen={isOpen} onEscapeKeydown={onCancel}>
+    <StyledModal isOpen={isRenamingNotebook} onEscapeKeydown={closeModal}>
       <h1>Rename Notebook</h1>
       <Content>
         <input
@@ -57,8 +77,8 @@ export default function RenameNotebookModal({ isOpen, currentNotebook, onCancel,
           ref={inputField} />
       </Content>
       <ButtonContainer>
-        <Button onClick={onCancel}>Cancel</Button>
-        <Button variant="active" onClick={() => onSave(nameValue)}>Save</Button>
+        <Button onClick={closeModal}>Cancel</Button>
+        <Button variant="active" onClick={save}>Save</Button>
       </ButtonContainer>
     </StyledModal>
   );
