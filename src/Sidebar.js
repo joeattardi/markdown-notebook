@@ -106,7 +106,7 @@ export default function Sidebar() {
             key={notebook.id}
             onClick={onClickNotebook}
             notebook={notebook}
-            active={currentNotebook === notebook} />
+            active={currentNotebook.id === notebook.id} />
         ))}
       </NotebookList>
     </Container>
