@@ -73,34 +73,6 @@ export default function App() {
       });
     }
   }
-  
-  function deleteNote() {
-    if (currentNote) {
-      const index = notes.findIndex(note => note.filename === currentNote.filename);
-
-      setNotes(notes.filter(note => note.filename !== currentNote.filename));
-      setCurrentNotebook({
-        ...currentNotebook,
-        count: currentNotebook.count - 1
-      });
-
-      setNotebooks(notebooks.map(notebook => {
-        if (notebook.id === currentNotebook.id) {
-          return {...currentNotebook, count: currentNotebook.count - 1};
-        }
-
-        return notebook;
-      }));
-
-      if (index === notes.length - 1) {
-        selectNote(notes[index - 1]);
-      } else {
-        selectNote(notes[index + 1]);
-      }
-
-      ipcRenderer.send('deleteNote', currentNote.filename);
-    }
-  }
 
   function createNewNotebook() {
     ipcRenderer.once('notebookCreated', (event, notebook) => {
@@ -141,8 +113,7 @@ export default function App() {
                 onDeleteNotebook={deleteNotebook}
                 onChangeNotebook={selectNotebook} />
               <div>
-                <Header
-                  onDelete={deleteNote} />
+                <Header />
                 <SplitPane split="vertical" minSize={250} maxSize={500}>
                   <NoteList />
                   <NoteContent />

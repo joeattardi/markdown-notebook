@@ -7,13 +7,13 @@ import Button from './Button';
 import ToggleButton from './ToggleButton';
 
 import { SET_EDITING, TOGGLE_EDITING } from './store/app';
-import { ADD_NOTE } from './store/notes';
+import { ADD_NOTE, DELETE_NOTE } from './store/notes';
 import { Notes, App } from './store';
 
-import { createNote } from './ipc';
+import { createNote, deleteNote } from './ipc';
 
-export default function Toolbar({ onDelete }) {
-  const { currentNotebook } = useContext(Notes.State);
+export default function Toolbar() {
+  const { currentNotebook, currentNote } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
   const { isEditing } = useContext(App.State);
@@ -29,6 +29,11 @@ export default function Toolbar({ onDelete }) {
     appDispatch({ type: TOGGLE_EDITING });
   }
 
+  async function onClickDelete() {
+    await deleteNote(currentNote.filename);
+    notesDispatch({ type: DELETE_NOTE });
+  }
+
   return (
     <div>
       <Button variant="toolbar" data-tip="New" onClick={onClickNew}>
@@ -37,7 +42,7 @@ export default function Toolbar({ onDelete }) {
       <ToggleButton onClick={onClickEdit} variant={isEditing ? 'active' : 'toolbar'} title="Edit">
         <FontAwesomeIcon icon={faPencilAlt} />
       </ToggleButton>
-      <Button variant="toolbar" data-tip="Delete" onClick={onDelete}>
+      <Button variant="toolbar" data-tip="Delete" onClick={onClickDelete}>
         <FontAwesomeIcon icon={faTrash} />
       </Button>
     </div>

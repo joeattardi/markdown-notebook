@@ -8,6 +8,7 @@ export const SET_CURRENT_NOTEBOOK = 'SET_CURRENT_NOTEBOOK';
 export const SET_CURRENT_NOTE = 'SET_CURRENT_NOTE';
 export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
 export const ADD_NOTE = 'ADD_NOTE';
+export const DELETE_NOTE = 'DELETE_NOTE';
 
 const State = createContext();
 const Dispatch = createContext();
@@ -67,6 +68,24 @@ function reducer(state, action) {
 
           return notebook;
         })
+      };
+    case DELETE_NOTE:
+      const currentNoteIndex = state.notes.findIndex(note => note.filename === state.currentNote.filename);
+
+      return {
+        ...state,
+        notes: state.notes.filter(note => note.filename !== state.currentNote.filename),
+        notebooks: state.notebooks.map(notebook => {
+          if (notebook.id === state.currentNotebook.id) {
+            return {
+              ...notebook,
+              count: notebook.count - 1
+            };
+          }
+
+          return notebook;
+        }),
+        currentNote: currentNoteIndex === state.notes.length - 1 ? state.notes[currentNoteIndex - 1] : state.notes[currentNoteIndex + 1]
       };
     default:
       return state;

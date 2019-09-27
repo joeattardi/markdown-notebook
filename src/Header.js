@@ -11,10 +11,10 @@ const Container = styled.header`
   border-bottom: 1px solid #CCCCCC;
 `;
 
-export default function Header({ onDelete }) {
+export default function Header() {
   return (
     <Container>
-      <Toolbar onDelete={onDelete} />
+      <Toolbar />
     </Container>
   );
 }
