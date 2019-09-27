@@ -11,6 +11,7 @@ export const ADD_NOTE = 'ADD_NOTE';
 export const DELETE_NOTE = 'DELETE_NOTE';
 export const ADD_NOTEBOOK = 'ADD_NOTEBOOK';
 export const DELETE_NOTEBOOK = 'DELETE_NOTEBOOK';
+export const RENAME_NOTEBOOK = 'RENAME_NOTEBOOK';
 
 const State = createContext();
 const Dispatch = createContext();
@@ -100,11 +101,21 @@ function reducer(state, action) {
         };
       case DELETE_NOTEBOOK:
         const currentNotebookIndex = state.notebooks.findIndex(notebook => notebook.id === state.currentNotebook.id);
-        console.log(currentNotebookIndex);
         return {
           ...state,
           notebooks: state.notebooks.filter(notebook => notebook.id !== state.currentNotebook.id),
           currentNotebook: currentNotebookIndex === state.notebooks.length - 1 ? state.notebooks[currentNotebookIndex - 1] : state.notebooks[currentNotebookIndex + 1]
+        };
+      case RENAME_NOTEBOOK:
+        return {
+          ...state,
+          notebooks: state.notebooks.map(notebook => {
+            if (notebook.id === state.currentNotebook.id) {
+              return { ...notebook, name: action.payload }
+            }
+
+            return notebook;
+          })
         };
     default:
       return state;

@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import styled from 'styled-components';
 
 import Button from './Button';
 import ToggleButton from './ToggleButton';
@@ -11,6 +12,12 @@ import { ADD_NOTE, DELETE_NOTE } from './store/notes';
 import { Notes, App } from './store';
 
 import { createNote, deleteNote } from './ipc';
+
+const Container = styled.div`
+  button {
+    font-size: 0.8rem;
+  }
+`;
 
 export default function Toolbar() {
   const { currentNotebook, currentNote } = useContext(Notes.State);
@@ -35,7 +42,7 @@ export default function Toolbar() {
   }
 
   return (
-    <div>
+    <Container>
       <Button variant="toolbar" data-tip="New" onClick={onClickNew}>
         <FontAwesomeIcon icon={faPlus} />
       </Button>
@@ -45,6 +52,6 @@ export default function Toolbar() {
       <Button variant="toolbar" data-tip="Delete" onClick={onClickDelete} disabled={!currentNote}>
         <FontAwesomeIcon icon={faTrash} />
       </Button>
-    </div>
+    </Container>
   );
 }

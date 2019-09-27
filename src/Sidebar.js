@@ -2,14 +2,15 @@ import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 
 import Notebook from './Notebook';
 
 import * as ipc from './ipc';
 
 import { SET_CURRENT_NOTEBOOK, SET_NOTEBOOKS, SET_NOTES, ADD_NOTEBOOK, DELETE_NOTEBOOK } from './store/notes';
-import { Notes } from './store';
+import { SET_RENAMING_NOTEBOOK } from './store/app';
+import { App, Notes } from './store';
 
 const Container = styled.div`
   background: ${({theme}) => theme.sidebarBackground};
@@ -55,6 +56,8 @@ export default function Sidebar() {
   const { notebooks, currentNotebook } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
+  const appDispatch = useContext(App.Dispatch);
+
   function onClickNotebook(notebook) {
     notesDispatch({ type: SET_CURRENT_NOTEBOOK, payload: notebook }); 
   }
@@ -67,6 +70,10 @@ export default function Sidebar() {
   async function onClickDelete() {
     await ipc.deleteNotebook(currentNotebook.name);
     notesDispatch({ type: DELETE_NOTEBOOK });
+  }
+
+  function onClickRename() {
+    appDispatch({ type: SET_RENAMING_NOTEBOOK, payload: true });
   }
 
   useEffect(() => {
@@ -95,6 +102,9 @@ export default function Sidebar() {
         <h2>Notebooks</h2>
         <button onClick={onClickNew} data-tip="New Notebook">
           <FontAwesomeIcon icon={faPlus} />
+        </button>
+        <button onClick={onClickRename} data-tip="Rename Notebook">
+          <FontAwesomeIcon icon={faPencilAlt} />
         </button>
         <button onClick={onClickDelete} data-tip="Delete Notebook">
           <FontAwesomeIcon icon={faTrash} />

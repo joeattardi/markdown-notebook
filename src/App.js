@@ -1,13 +1,10 @@
 import React from 'react';
 
-import SplitPane from 'react-split-pane';
 import ReactTooltip from 'react-tooltip'
-import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+import { ThemeProvider, createGlobalStyle } from 'styled-components';
+import { ModalProvider } from 'styled-react-modal'
 
-import Header from './Header';
-import NoteContent from './NoteContent';
-import NoteList from './NoteList';
-import Sidebar from './Sidebar';
+import Main from './Main';
 
 import { Store } from './store';
 
@@ -24,38 +21,15 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Container = styled.div`
-  height: 100vh;
-  position: relative;
-
-  .Resizer {
-    position: relative;
-    margin-left: -5px;
-    width: 5px;
-    cursor: ew-resize;
-  }
-`;
-
 export default function App() {
   return (
     <Store>
       <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <ReactTooltip effect="solid" delayShow={250} />
-        <div>
-          <Container>
-            <SplitPane split="vertical" minSize={250} maxSize={500}>
-              <Sidebar />
-              <div>
-                <Header />
-                <SplitPane split="vertical" minSize={250} maxSize={500}>
-                  <NoteList />
-                  <NoteContent />
-                </SplitPane>
-              </div>
-            </SplitPane>
-          </Container>
-        </div>
+        <ModalProvider>
+          <GlobalStyle />
+          <ReactTooltip effect="solid" delayShow={250} />
+          <Main />
+        </ModalProvider>
       </ThemeProvider>
     </Store>
   );

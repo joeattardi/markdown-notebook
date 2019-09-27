@@ -2,12 +2,14 @@ import React, { createContext, useReducer } from 'react';
 
 export const SET_EDITING = 'SET_EDITING';
 export const TOGGLE_EDITING = 'TOGGLE_EDITING';
+export const SET_RENAMING_NOTEBOOK = 'SET_RENAMING_NOTEBOOK';
 
 const State = createContext();
 const Dispatch = createContext();
 
 const initialState = {
-  isEditing: false
+  isEditing: false,
+  isRenamingNotebook: false
 };
 
 function reducer(state, action) {
@@ -21,6 +23,11 @@ function reducer(state, action) {
       return {
         ...state,
         isEditing: action.payload
+      };
+    case SET_RENAMING_NOTEBOOK:
+      return {
+        ...state,
+        isRenamingNotebook: action.payload
       };
     default:
       return state;
