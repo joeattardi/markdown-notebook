@@ -29,7 +29,9 @@ export default function NoteEditor({ content, onChange }) {
   const { currentNote } = useContext(Notes.State);
 
   function onEditorChange(editor, data, value) {
-    onChange(value);
+    if (data.origin) {
+      onChange(value);
+    }
   }
 
   useEffect(() => {
