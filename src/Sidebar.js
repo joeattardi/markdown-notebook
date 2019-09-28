@@ -197,6 +197,7 @@ const NewButton = styled.button`
   cursor: pointer;
   transition: all 0.2s;
   border-radius: 5px;
+  font-weight: bold;
 
   &:hover {
     background: rgba(255, 255, 255, 0.25);

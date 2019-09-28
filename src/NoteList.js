@@ -86,16 +86,17 @@ const NoNotesIcon = styled.div`
 
 const NewButton = styled.button`
   background: transparent;
-  border: 1px solid #333333;
-  color: #333333;
+  border: 1px solid ${({theme}) => theme.brandColor};
+  color: ${({theme}) => theme.brandColor};
   font-size: 1rem;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
   transition: all 0.2s;
   border-radius: 5px;
+  font-weight: bold;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(41, 78, 114, 0.25);
   }
 `;
 
