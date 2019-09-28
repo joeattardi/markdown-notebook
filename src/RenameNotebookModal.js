@@ -9,6 +9,7 @@ import { SET_RENAMING_NOTEBOOK } from './store/app';
 import { RENAME_NOTEBOOK } from './store/notes';
 import { App, Notes } from './store';
 
+import { showMessageBox } from './interactions';
 import { renameNotebook } from './ipc';
 
 const StyledModal = Modal.styled`
@@ -65,8 +66,17 @@ export default function RenameNotebookModal() {
   async function submitForm(event) {
     event.preventDefault();
 
-    await renameNotebook(currentNotebook.name, nameValue);
-    notesDispatch({ type: RENAME_NOTEBOOK, payload: nameValue });
+    try {
+      await renameNotebook(currentNotebook.name, nameValue);
+      notesDispatch({ type: RENAME_NOTEBOOK, payload: nameValue });
+    } catch (error) {
+      showMessageBox({
+        type: 'error',
+        message: 'Failed to rename notebook',
+        detail: error.message
+      });
+    }
+
     closeModal();
   }
 

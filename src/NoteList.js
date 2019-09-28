@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import Note from './Note';
 
+import { showMessageBox } from './interactions';
 import { createNote, getNote, saveNote } from './ipc';
 
 import { ADD_NOTE, SET_CURRENT_NOTE, SET_NOTE_CONTENT, SET_NOTE_TITLE } from './store/notes';
@@ -24,16 +25,32 @@ export default function NoteList() {
   const appDispatch = useContext(App.Dispatch);
 
   async function onClickNew() {
-    const newNote = await createNote(currentNotebook.name);
-    notesDispatch({ type: ADD_NOTE, payload: newNote });
-    appDispatch({ type: SET_EDITING, payload: true });
+    try {
+      const newNote = await createNote(currentNotebook.name);
+      notesDispatch({ type: ADD_NOTE, payload: newNote });
+      appDispatch({ type: SET_EDITING, payload: true });
+    } catch (error) {
+      showMessageBox({
+        type: 'error',
+        message: 'Failed to create new note',
+        detail: error.message
+      });
+    }
   }
 
-  function onClickNote(note) {
-    saveNote({
-      ...currentNote,
-      content: noteContent
-    });
+  async function onClickNote(note) {
+    try {
+      await saveNote({
+        ...currentNote,
+        content: noteContent
+      });
+    } catch (error) {
+      showMessageBox({
+        type: 'error',
+        message: 'Failed to save changes',
+        detail: error.message
+      });
+    }
 
     notesDispatch({ type: SET_CURRENT_NOTE, payload: note });
   }

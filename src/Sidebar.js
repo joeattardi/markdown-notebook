@@ -12,6 +12,7 @@ import { wrapComponent } from 'react-snackbar-alert';
 
 import Notebook from './Notebook';
 
+import { showMessageBox } from './interactions';
 import * as ipc from './ipc';
 
 import {
@@ -84,22 +85,38 @@ function Sidebar({ createSnackbar }) {
   }
 
   async function onClickNew() {
-    const newNotebook = await ipc.createNotebook();
-    notesDispatch({ type: ADD_NOTEBOOK, payload: newNotebook });
+    try {
+      const newNotebook = await ipc.createNotebook();
+      notesDispatch({ type: ADD_NOTEBOOK, payload: newNotebook });
+    } catch (error) {
+      showMessageBox({
+        message: 'Failed to create a new notebook',
+        detail: error.message,
+        type: 'error'
+      });
+    }
   }
 
   async function onClickDelete() {
     const confirm = await ipc.confirmDeleteNotebook(currentNotebook.name);
     if (confirm) {
-      await ipc.deleteNotebook(currentNotebook.name);
-      notesDispatch({ type: DELETE_NOTEBOOK });
-      createSnackbar({
-        message: `Notebook "${currentNotebook.name}" was deleted.`,
-        theme: 'success'
-      });
+      try {
+        await ipc.deleteNotebook(currentNotebook.name);
+        notesDispatch({ type: DELETE_NOTEBOOK });
+        createSnackbar({
+          message: `Notebook "${currentNotebook.name}" was deleted.`,
+          theme: 'success'
+        });
 
-      if (notebooks.length === 1) { // we deleted the last notebook
-        notesDispatch({ type: SET_NOTES, payload: [] });
+        if (notebooks.length === 1) { // we deleted the last notebook
+          notesDispatch({ type: SET_NOTES, payload: [] });
+        }
+      } catch (error) {
+        showMessageBox({
+          message: 'Failed to delete the notebook',
+          detail: error.message,
+          type: 'error'
+        });
       }
     }
   }

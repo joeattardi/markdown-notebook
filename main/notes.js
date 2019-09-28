@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const readline = require('readline');
 
-const { ipcMain } = require('electron');
+const { dialog, ipcMain } = require('electron');
 const slugify = require('slugify');
 
 const { NOTE_DIRECTORY } = require('./config');
@@ -220,32 +220,61 @@ ipcMain.on('getNote', (event, filename) => {
 });
 
 ipcMain.on('saveNote', (event, note) => {
-  saveNote(note);
+  try {
+    saveNote(note);
+    event.sender.send('noteSaved');
+  } catch (error) {
+    event.sender.send('noteSaved', { message: error.message });
+  }
 });
 
 ipcMain.on('createNote', (event, notebook) => {
-  event.sender.send('noteCreated', createNote(notebook));
+  try {
+    event.sender.send('noteCreated', null, createNote(notebook));
+  } catch (error) {
+    event.sender.send('noteCreated', { message: error.message }, null);
+  }
 });
 
 ipcMain.on('deleteNote', (event, noteFilename) => {
-  deleteNote(noteFilename);
-  event.sender.send('noteDeleted');
+  try {
+    deleteNote(noteFilename);
+    event.sender.send('noteDeleted');
+  } catch (error) {
+    event.sender.send('noteDeleted', { message: error.message });
+  }
 });
 
 ipcMain.on('createNotebook', event => {
-  event.sender.send('notebookCreated', createNotebook());
+  try {
+    event.sender.send('notebookCreated', null, createNotebook()); 
+  } catch (error) {
+    event.sender.send('notebookCreated', { message: error.message }, null);
+  }
 });
 
 ipcMain.on('deleteNotebook', (event, notebook) => {
-  deleteNotebook(notebook);
-  event.sender.send('notebookDeleted');
+  try {
+    deleteNotebook(notebook);
+    event.sender.send('notebookDeleted');
+  } catch (error) {
+    event.sender.send('notebookDeleted', { message: error.message });
+  }
 });
 
 ipcMain.on('renameNotebook', (event, notebook, newName) => {
-  renameNotebook(notebook, newName);
-  event.sender.send('notebookRenamed');
+  try {
+    renameNotebook(notebook, newName);
+    event.sender.send('notebookRenamed');
+  } catch (error) {
+    event.sender.send('notebookRenamed', { message: error.message });
+  }
 });
 
 ipcMain.on('renameNote', (event, notebook, note, newName) => {
-  event.sender.send('noteRenamed', renameNote(notebook, note, newName));
+  try {
+    event.sender.send('noteRenamed', null, renameNote(notebook, note, newName));
+  } catch (error) {
+    event.sender.send('noteRenamed', { message: error.message }, null);
+  }
 });

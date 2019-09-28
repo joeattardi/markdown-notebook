@@ -8,6 +8,7 @@ const isDev = require('electron-is-dev');
 const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 
 const { DATA_DIRECTORY, NOTE_DIRECTORY } = require('./config');
+const { setMainWindow } = require('./interactions');
 require('./notes');
 
 let mainWindow;
@@ -20,6 +21,8 @@ async function createWindow() {
       nodeIntegration: true
     }
   });
+
+  setMainWindow(mainWindow);
 
   mainWindow.loadURL(isDev ? 'http://localhost:4000' : `file://${path.join(__dirname, '..', 'build', 'index.html')}`);
 

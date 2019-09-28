@@ -12,6 +12,7 @@ import { SET_EDITING, TOGGLE_EDITING } from './store/app';
 import { ADD_NOTE, DELETE_NOTE } from './store/notes';
 import { Notes, App } from './store';
 
+import { showMessageBox } from './interactions';
 import { createNote, deleteNote } from './ipc';
 
 const Container = styled.div`
@@ -28,9 +29,17 @@ function Toolbar({ createSnackbar }) {
   const appDispatch = useContext(App.Dispatch);
 
   async function onClickNew() {
-    const newNote = await createNote(currentNotebook.name);
-    notesDispatch({ type: ADD_NOTE, payload: newNote });
-    appDispatch({ type: SET_EDITING, payload: true });
+    try {
+      const newNote = await createNote(currentNotebook.name);
+      notesDispatch({ type: ADD_NOTE, payload: newNote });
+      appDispatch({ type: SET_EDITING, payload: true });
+    } catch (error) {
+      showMessageBox({
+        type: 'error',
+        message: 'Failed to create new note',
+        detail: error.message
+      });
+    }
   }
 
   function onClickEdit() {
@@ -38,12 +47,20 @@ function Toolbar({ createSnackbar }) {
   }
 
   async function onClickDelete() {
-    await deleteNote(currentNote.filename);
-    notesDispatch({ type: DELETE_NOTE });
-    createSnackbar({
-      message: `Note "${currentNote.title}" was deleted.`,
-      theme: 'success'
-    });
+    try {
+      await deleteNote(currentNote.filename);
+      notesDispatch({ type: DELETE_NOTE });
+      createSnackbar({
+        message: `Note "${currentNote.title}" was deleted.`,
+        theme: 'success'
+      });
+    } catch (error) {
+      showMessageBox({
+        type: 'error',
+        message: 'Failed to delete note',
+        detail: error.message
+      });
+    }
   }
 
   return (
