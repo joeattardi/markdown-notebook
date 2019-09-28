@@ -15,7 +15,8 @@ import { renameNotebook } from './ipc';
 const StyledModal = Modal.styled`
   width: 20rem;
   background: #FFFFFF;
-  padding: 0.5rem;
+  padding: 1rem;
+  border-radius: 5px;
 
   h1 {
     margin: 0;
