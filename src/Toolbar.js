@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { wrapComponent } from 'react-snackbar-alert';
 import styled from 'styled-components';
 
 import Button from './Button';
@@ -19,7 +20,7 @@ const Container = styled.div`
   }
 `;
 
-export default function Toolbar() {
+function Toolbar({ createSnackbar }) {
   const { currentNotebook, currentNote } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
@@ -39,6 +40,10 @@ export default function Toolbar() {
   async function onClickDelete() {
     await deleteNote(currentNote.filename);
     notesDispatch({ type: DELETE_NOTE });
+    createSnackbar({
+      message: `Note "${currentNote.title}" was deleted.`,
+      theme: 'success'
+    });
   }
 
   return (
@@ -55,3 +60,5 @@ export default function Toolbar() {
     </Container>
   );
 }
+
+export default wrapComponent(Toolbar);
