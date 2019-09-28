@@ -30,7 +30,7 @@ export default function Main() {
           <Sidebar />
           <div>
             <Header />
-            <SplitPane split="vertical" minSize={250} maxSize={500}>
+            <SplitPane split="vertical" minSize={250} maxSize={500} size={350}>
               <NoteList />
               <NoteContent />
             </SplitPane>
