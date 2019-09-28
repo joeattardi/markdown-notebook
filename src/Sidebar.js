@@ -162,7 +162,7 @@ function Sidebar({ createSnackbar }) {
           ))}
         </NotebookList>
       ) : (
-        <NoNotebooksMessage />
+        <NoNotebooksMessage onClickNew={onClickNew} />
       )}
     </Container>
   );
@@ -188,7 +188,22 @@ const NoNotebooksIcon = styled.div`
   opacity: 0.2;
 `;
 
-function NoNotebooksMessage() {
+const NewButton = styled.button`
+  background: transparent;
+  border: 1px solid #FFFFFF;
+  color: #FFFFFF;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 5px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+`;
+
+function NoNotebooksMessage({ onClickNew }) {
   return (
     <StyledMessage>
       <NoNotebooksIcon>
@@ -196,7 +211,7 @@ function NoNotebooksMessage() {
       </NoNotebooksIcon>
       <h3>There are no notebooks.</h3>
       <p>
-        Click the <FontAwesomeIcon icon={faPlus} /> to get started.
+        <NewButton onClick={onClickNew}>New Notebook</NewButton>
       </p>
     </StyledMessage>
   );
