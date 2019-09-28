@@ -22,6 +22,7 @@ export default function NoteList() {
   const { notes, currentNote, currentNotebook, noteContent } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
+  const { isEditing } = useContext(App.State);
   const appDispatch = useContext(App.Dispatch);
 
   async function onClickNew() {
@@ -39,17 +40,19 @@ export default function NoteList() {
   }
 
   async function onClickNote(note) {
-    try {
-      await saveNote({
-        ...currentNote,
-        content: noteContent
-      });
-    } catch (error) {
-      showMessageBox({
-        type: 'error',
-        message: 'Failed to save changes',
-        detail: error.message
-      });
+    if (isEditing) {
+      try {
+        await saveNote({
+          ...currentNote,
+          content: noteContent
+        });
+      } catch (error) {
+        showMessageBox({
+          type: 'error',
+          message: 'Failed to save changes',
+          detail: error.message
+        });
+      }
     }
 
     notesDispatch({ type: SET_CURRENT_NOTE, payload: note });

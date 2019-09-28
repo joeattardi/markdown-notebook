@@ -13,7 +13,7 @@ import { ADD_NOTE, DELETE_NOTE } from './store/notes';
 import { Notes, App } from './store';
 
 import { showMessageBox } from './interactions';
-import { createNote, deleteNote } from './ipc';
+import { createNote, deleteNote, saveNote } from './ipc';
 
 const Container = styled.div`
   button {
@@ -22,7 +22,7 @@ const Container = styled.div`
 `;
 
 function Toolbar({ createSnackbar }) {
-  const { currentNotebook, currentNote } = useContext(Notes.State);
+  const { currentNotebook, currentNote, noteContent } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
   const { isEditing } = useContext(App.State);
@@ -42,8 +42,23 @@ function Toolbar({ createSnackbar }) {
     }
   }
 
-  function onClickEdit() {
+  async function onClickEdit() {
     appDispatch({ type: TOGGLE_EDITING });
+
+    if (isEditing) {
+      try {
+        await saveNote({
+          ...currentNote,
+          content: noteContent
+        });
+      } catch (error) {
+        showMessageBox({
+          type: 'error',
+          message: 'Failed to save changes',
+          detail: error.message
+        });
+      }
+    }    
   }
 
   async function onClickDelete() {
