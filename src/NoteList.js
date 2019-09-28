@@ -1,12 +1,16 @@
 import React, { useContext, useEffect } from 'react';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 
 import Note from './Note';
 
-import { getNote, saveNote } from './ipc';
+import { createNote, getNote, saveNote } from './ipc';
 
-import { SET_CURRENT_NOTE, SET_NOTE_CONTENT, SET_NOTE_TITLE } from './store/notes';
-import { Notes } from './store';
+import { ADD_NOTE, SET_CURRENT_NOTE, SET_NOTE_CONTENT, SET_NOTE_TITLE } from './store/notes';
+import { SET_EDITING } from './store/app';
+import { App, Notes } from './store';
 
 const Container = styled.div`
   border-right: 1px solid #CCCCCC;
@@ -14,8 +18,16 @@ const Container = styled.div`
 `;
 
 export default function NoteList() {
-  const { notes, currentNote, noteContent } = useContext(Notes.State);
+  const { notes, currentNote, currentNotebook, noteContent } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
+
+  const appDispatch = useContext(App.Dispatch);
+
+  async function onClickNew() {
+    const newNote = await createNote(currentNotebook.name);
+    notesDispatch({ type: ADD_NOTE, payload: newNote });
+    appDispatch({ type: SET_EDITING, payload: true });
+  }
 
   function onClickNote(note) {
     saveNote({
@@ -42,13 +54,61 @@ export default function NoteList() {
 
   return (
     <Container>
-      {notes.map(note => (
+      {notes && notes.length ? notes.map(note => (
         <Note
           active={currentNote.filename === note.filename}
           key={note.filename}
           note={note}
           onClick={onClickNote} />
-      ))}
+      )) : currentNotebook ? <NoNotesMessage onClickNew={onClickNew} /> : null}
     </Container>
+  );
+}
+
+const StyledMessage = styled.div`
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  h3 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+`;
+
+const NoNotesIcon = styled.div`
+  font-size: 4rem;
+  opacity: 0.2;
+`;
+
+const NewButton = styled.button`
+  background: transparent;
+  border: 1px solid #333333;
+  color: #333333;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 5px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.25);
+  }
+`;
+
+function NoNotesMessage({ onClickNew }) {
+  return (
+    <StyledMessage>
+      <NoNotesIcon>
+        <FontAwesomeIcon icon={faStickyNote} />
+      </NoNotesIcon>
+      <h3>There are no notes.</h3>
+      <p>
+        <NewButton onClick={onClickNew}>New Note</NewButton>
+      </p>
+    </StyledMessage>
   );
 }

@@ -184,7 +184,7 @@ const StyledMessage = styled.div`
 `;
 
 const NoNotebooksIcon = styled.div`
-  font-size: 1.5rem;
+  font-size: 4rem;
   opacity: 0.2;
 `;
 
