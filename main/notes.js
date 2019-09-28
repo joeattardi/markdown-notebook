@@ -208,15 +208,27 @@ function getNoteData(notebook, filename) {
 }
 
 ipcMain.on('getNotebooks', event => {
-  event.sender.send('notebooks', getNotebooks());
+  try {
+    event.sender.send('notebooks', null, getNotebooks());
+  } catch (error) {
+    event.sender.send('notebooks', { message: error.message }, null);
+  }
 });
 
 ipcMain.on('getNotes', async (event, notebook) => {
-  event.sender.send('notes', await getNotes(notebook));
+  try {
+    event.sender.send('notes', null, await getNotes(notebook));
+  } catch (error) {
+    event.sender.send('notes', { message: error.message }, null);
+  }
 });
 
 ipcMain.on('getNote', (event, filename) => {
-  event.sender.send('note', getNote(filename));
+  try {
+    event.sender.send('note', null, getNote(filename));
+  } catch (error) {
+    event.sender.send('notes', { message: error.message }, null);
+  }
 });
 
 ipcMain.on('saveNote', (event, note) => {

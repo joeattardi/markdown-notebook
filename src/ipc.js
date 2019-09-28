@@ -19,21 +19,39 @@ export const debouncedSave = debounce(saveNote, 500);
 
 export function getNote(filename) {
   return new Promise((resolve, reject) => {
-    ipcRenderer.once('note', (event, note) => resolve(note));
+    ipcRenderer.once('note', (event, error, note) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(note);
+      }
+    });
     ipcRenderer.send('getNote', filename);
   });
 }
 
 export function getNotebooks() {
   return new Promise((resolve, reject) => {
-    ipcRenderer.once('notebooks', (event, notebooks) => resolve(notebooks));
+    ipcRenderer.once('notebooks', (event, error, notebooks) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(notebooks);
+      }
+    });
     ipcRenderer.send('getNotebooks');
   });
 }
 
 export function getNotes(notebook) {
   return new Promise((resolve, reject) => {
-    ipcRenderer.once('notes', (event, notes) => resolve(notes));
+    ipcRenderer.once('notes', (event, error, notes) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(notes);
+      }
+    });
     ipcRenderer.send('getNotes', notebook);
   });
 }

@@ -127,8 +127,16 @@ function Sidebar({ createSnackbar }) {
 
   useEffect(() => {
     async function getNotebooks() {
-      const notebooks = await ipc.getNotebooks();
-      notesDispatch({ type: SET_NOTEBOOKS, payload: notebooks });
+      try {
+        const notebooks = await ipc.getNotebooks();
+        notesDispatch({ type: SET_NOTEBOOKS, payload: notebooks });
+      } catch (error) {
+        showMessageBox({
+          type: 'error',
+          message: 'Failed to load notebook list',
+          detail: error.message
+        });
+      }
     }
 
     getNotebooks();
@@ -137,8 +145,16 @@ function Sidebar({ createSnackbar }) {
   useEffect(() => {
     async function getNotes() {
       if (currentNotebook) {
-        const notes = await ipc.getNotes(currentNotebook.name);
-        notesDispatch({ type: SET_NOTES, payload: notes });
+        try {
+          const notes = await ipc.getNotes(currentNotebook.name);
+          notesDispatch({ type: SET_NOTES, payload: notes });
+        } catch (error) {
+          showMessageBox({
+            type: 'error',
+            message: 'Failed to load note list',
+            detail: error.message
+          });
+        }
       }
     }
 

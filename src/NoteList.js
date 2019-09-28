@@ -61,9 +61,17 @@ export default function NoteList() {
   useEffect(() => {
     async function setNoteContent() {
       if (currentNote) {
-        const note = await getNote(currentNote.filename);
-        notesDispatch({ type: SET_NOTE_CONTENT, payload: note.content });
-        notesDispatch({ type: SET_NOTE_TITLE, payload: note.title });
+        try {
+          const note = await getNote(currentNote.filename);
+          notesDispatch({ type: SET_NOTE_CONTENT, payload: note.content });
+          notesDispatch({ type: SET_NOTE_TITLE, payload: note.title });
+        } catch (error) {
+          showMessageBox({
+            type: 'error',
+            message: 'Failed to load note',
+            detail: error.message
+          });
+        }
       } else {
         notesDispatch({ type: SET_NOTE_CONTENT, payload: '' });
       }
