@@ -2,137 +2,60 @@ import { debounce } from 'debounce';
 
 const { ipcRenderer } = window.require('electron');
 
-export function saveNote(note) {
+function callApi(call, response, ...callArgs) {
   return new Promise((resolve, reject) => {
-    ipcRenderer.once('noteSaved', (event, error) => {
+    ipcRenderer.once(response, (event, error, ...responseArgs) => {
       if (error) {
         reject(error);
       } else {
-        resolve();
+        resolve(...responseArgs);
       }
     });
-    ipcRenderer.send('saveNote', note);
+
+    ipcRenderer.send(call, ...callArgs);
   });
+}
+
+export function saveNote(note) {
+  return callApi('saveNote', 'noteSaved', note);
 }
 
 export const debouncedSave = debounce(saveNote, 500);
 
 export function getNote(filename) {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once('note', (event, error, note) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(note);
-      }
-    });
-    ipcRenderer.send('getNote', filename);
-  });
+  return callApi('getNote', 'note', filename);
 }
 
 export function getNotebooks() {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once('notebooks', (event, error, notebooks) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(notebooks);
-      }
-    });
-    ipcRenderer.send('getNotebooks');
-  });
+  return callApi('getNotebooks', 'notebooks');
 }
 
 export function getNotes(notebook) {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once('notes', (event, error, notes) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(notes);
-      }
-    });
-    ipcRenderer.send('getNotes', notebook);
-  });
+  return callApi('getNotes', 'notes', notebook);
 }
 
 export function createNote(notebook) {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once('noteCreated', (event, error, note) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(note);
-      }
-    });
-    ipcRenderer.send('createNote', notebook);
-  });
+  return callApi('createNote', 'noteCreated', notebook);
 }
 
 export function deleteNote(filename) {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once('noteDeleted', (event, error) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve();
-      }
-    });
-    ipcRenderer.send('deleteNote', filename);
-  });
+  return callApi('deleteNote', 'noteDeleted', filename);
 }
 
 export function createNotebook() {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once('notebookCreated', (event, error, notebook) => {
-      if (notebook) {
-        resolve(notebook);
-      } else {
-        reject(error);
-      }
-    });
-    
-    ipcRenderer.send('createNotebook');
-  });
+  return callApi('createNotebook', 'notebookCreated');
 }
 
 export function deleteNotebook(notebook) {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once('notebookDeleted', (event, error) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve();
-      }
-    });
-    ipcRenderer.send('deleteNotebook', notebook);
-  });
+  return callApi('deleteNotebook', 'notebookDeleted');
 }
 
 export function renameNotebook(notebook, newName) {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once('notebookRenamed', (event, error) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve();
-      }
-    });
-    ipcRenderer.send('renameNotebook', notebook, newName);
-  });
+  return callApi('renameNotebook', 'notebookRenamed', notebook, newName);
 }
 
 export function renameNote(notebook, note, newName) {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once('noteRenamed', (event, error, filename) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(filename);
-      }
-    });
-    ipcRenderer.send('renameNote', notebook, note, newName);
-  });
+  return callApi('renameNote', 'noteRenamed', notebook, note, newName);
 }
 
 export function confirmDeleteNotebook(notebook) {
