@@ -5,7 +5,6 @@ const debug = require('debug')('markdown-notebook:main');
 const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 
 const isDev = require('electron-is-dev');
-const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 
 const { DATA_DIRECTORY, NOTE_DIRECTORY } = require('./config');
 const { buildApplicationMenu } = require('./menu');
@@ -25,6 +24,7 @@ async function createWindow() {
   mainWindow.loadURL(isDev ? 'http://localhost:4000' : `file://${path.join(__dirname, '..', 'build', 'index.html')}`);
 
   if (isDev) {
+    const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
     await installExtension(REACT_DEVELOPER_TOOLS);
     mainWindow.webContents.openDevTools();
   }
