@@ -51,8 +51,15 @@ export async function deleteNote(notesDispatch, createSnackbar, currentNote) {
 }
 
 export async function deleteNotebook(notesDispatch, createSnackbar, notebooks, currentNotebook) {
-  const confirm = await ipc.confirmDeleteNotebook(currentNotebook.name);
-  if (confirm) {
+  const result = showMessageBox({
+    type: 'question',
+    buttons: ['Cancel', 'Confirm'],
+    message: 'Delete Notebook?',
+    detail: `This will delete all notes in the notebook "${currentNotebook.name}" and cannot be undone.`,
+    defaultId: 1
+  });
+
+  if (result === 1) {
     try {
       await ipc.deleteNotebook(currentNotebook.name);
       notesDispatch({ type: DELETE_NOTEBOOK });

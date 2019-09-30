@@ -1,5 +1,7 @@
-const { ipcRenderer } = window.require('electron');
+const { remote } = window.require('electron');
+
+const mainWindow = remote.getCurrentWindow();
 
 export function showMessageBox(options) {
-  ipcRenderer.send('showMessageBox', options);
+  return remote.dialog.showMessageBoxSync(mainWindow, options);
 }

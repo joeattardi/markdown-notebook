@@ -58,13 +58,6 @@ export function renameNote(notebook, note, newName) {
   return callApi('renameNote', 'noteRenamed', notebook, note, newName);
 }
 
-export function confirmDeleteNotebook(notebook) {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once('confirmDeleteNotebook', (event, result) => resolve(result));
-    ipcRenderer.send('confirmDeleteNotebook', notebook);
-  });
-}
-
 export function setIsEditing(isEditing) {
   ipcRenderer.send('isEditing', isEditing);
 }
