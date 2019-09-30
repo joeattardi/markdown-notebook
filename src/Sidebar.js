@@ -14,15 +14,13 @@ import Notebook from './Notebook';
 
 import { showMessageBox } from './interactions';
 import * as ipc from './ipc';
+import * as actions from './actions';
 
 import {
   SET_CURRENT_NOTEBOOK,
   SET_NOTEBOOKS,
   SET_NOTES,
-  ADD_NOTEBOOK,
-  DELETE_NOTEBOOK
 } from './store/notes';
-import { SET_RENAMING_NOTEBOOK } from './store/app';
 import { App, Notes } from './store';
 
 const Container = styled.div`
@@ -84,45 +82,16 @@ function Sidebar({ createSnackbar }) {
     notesDispatch({ type: SET_CURRENT_NOTEBOOK, payload: notebook });
   }
 
-  async function onClickNew() {
-    try {
-      const newNotebook = await ipc.createNotebook();
-      notesDispatch({ type: ADD_NOTEBOOK, payload: newNotebook });
-    } catch (error) {
-      showMessageBox({
-        message: 'Failed to create a new notebook',
-        detail: error.message,
-        type: 'error'
-      });
-    }
+  function onClickNew() {
+    actions.createNotebook(notesDispatch);
   }
 
-  async function onClickDelete() {
-    const confirm = await ipc.confirmDeleteNotebook(currentNotebook.name);
-    if (confirm) {
-      try {
-        await ipc.deleteNotebook(currentNotebook.name);
-        notesDispatch({ type: DELETE_NOTEBOOK });
-        createSnackbar({
-          message: `Notebook "${currentNotebook.name}" was deleted.`,
-          theme: 'success'
-        });
-
-        if (notebooks.length === 1) { // we deleted the last notebook
-          notesDispatch({ type: SET_NOTES, payload: [] });
-        }
-      } catch (error) {
-        showMessageBox({
-          message: 'Failed to delete the notebook',
-          detail: error.message,
-          type: 'error'
-        });
-      }
-    }
+  function onClickDelete() {
+    actions.deleteNotebook(notesDispatch, createSnackbar, notebooks, currentNotebook);
   }
 
   function onClickRename() {
-    appDispatch({ type: SET_RENAMING_NOTEBOOK, payload: true });
+    actions.renameNotebook(appDispatch);
   }
 
   useEffect(() => {

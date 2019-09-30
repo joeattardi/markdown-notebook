@@ -8,12 +8,9 @@ import styled from 'styled-components';
 import Button from './Button';
 import ToggleButton from './ToggleButton';
 
-import { SET_EDITING, TOGGLE_EDITING } from './store/app';
-import { ADD_NOTE, DELETE_NOTE } from './store/notes';
 import { Notes, App } from './store';
 
-import { showMessageBox } from './interactions';
-import { createNote, deleteNote, saveNote } from './ipc';
+import { createNote, deleteNote, toggleEdit } from './actions';
 
 const Container = styled.div`
   button {
@@ -28,54 +25,16 @@ function Toolbar({ createSnackbar }) {
   const { isEditing } = useContext(App.State);
   const appDispatch = useContext(App.Dispatch);
 
-  async function onClickNew() {
-    try {
-      const newNote = await createNote(currentNotebook.name);
-      notesDispatch({ type: ADD_NOTE, payload: newNote });
-      appDispatch({ type: SET_EDITING, payload: true });
-    } catch (error) {
-      showMessageBox({
-        type: 'error',
-        message: 'Failed to create new note',
-        detail: error.message
-      });
-    }
+  function onClickNew() {
+    createNote(notesDispatch, appDispatch, currentNotebook.name);
   }
 
   async function onClickEdit() {
-    appDispatch({ type: TOGGLE_EDITING });
-
-    if (isEditing) {
-      try {
-        await saveNote({
-          ...currentNote,
-          content: noteContent
-        });
-      } catch (error) {
-        showMessageBox({
-          type: 'error',
-          message: 'Failed to save changes',
-          detail: error.message
-        });
-      }
-    }    
+    toggleEdit(appDispatch, isEditing, currentNote, noteContent);
   }
 
-  async function onClickDelete() {
-    try {
-      await deleteNote(currentNote.filename);
-      notesDispatch({ type: DELETE_NOTE });
-      createSnackbar({
-        message: `Note "${currentNote.title}" was deleted.`,
-        theme: 'success'
-      });
-    } catch (error) {
-      showMessageBox({
-        type: 'error',
-        message: 'Failed to delete note',
-        detail: error.message
-      });
-    }
+  function onClickDelete() {
+    deleteNote(notesDispatch, createSnackbar, currentNote);
   }
 
   return (

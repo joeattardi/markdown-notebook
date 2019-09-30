@@ -47,7 +47,7 @@ export function createNotebook() {
 }
 
 export function deleteNotebook(notebook) {
-  return callApi('deleteNotebook', 'notebookDeleted');
+  return callApi('deleteNotebook', 'notebookDeleted', notebook);
 }
 
 export function renameNotebook(notebook, newName) {
@@ -63,4 +63,8 @@ export function confirmDeleteNotebook(notebook) {
     ipcRenderer.once('confirmDeleteNotebook', (event, result) => resolve(result));
     ipcRenderer.send('confirmDeleteNotebook', notebook);
   });
+}
+
+export function setIsEditing(isEditing) {
+  ipcRenderer.send('isEditing', isEditing);
 }

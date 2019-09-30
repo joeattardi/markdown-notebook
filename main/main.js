@@ -9,6 +9,7 @@ const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-d
 
 const { DATA_DIRECTORY, NOTE_DIRECTORY } = require('./config');
 const { setMainWindow } = require('./interactions');
+const { buildApplicationMenu } = require('./menu');
 require('./notes');
 
 let mainWindow;
@@ -31,6 +32,7 @@ async function createWindow() {
     mainWindow.webContents.openDevTools();
   }
 
+  buildApplicationMenu();
   mainWindow.maximize();
 }
 
