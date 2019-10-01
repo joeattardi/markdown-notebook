@@ -7,8 +7,8 @@ import NoteView from './NoteView';
 import { showMessageBox } from './interactions';
 import { debouncedSave, renameNote } from './ipc';
 
-import { SET_EDITING } from './store/app';
-import { RENAME_NOTE, SET_NOTE_CONTENT, SET_NOTE_TITLE } from './store/notes';
+import { actions as appActions } from './store/app';
+import { actions as noteActions } from './store/notes';
 import { App, Notes } from './store';
 
 const Container = styled.div`
@@ -38,15 +38,15 @@ export default function NoteContent() {
       content
     });
 
-    notesDispatch({ type: SET_NOTE_CONTENT, payload: content });
+    notesDispatch(noteActions.setNoteContent(content));
   }
 
   function onTitleChange(title) {
-    notesDispatch({ type: SET_NOTE_TITLE, payload: title });
+    notesDispatch(noteActions.setNoteTitle(title));
   }
 
   function onExitEdit() {
-    appDispatch({ type: SET_EDITING, payload: false });
+    appDispatch(appActions.setEditing(false));
   }
 
   async function onRename() {
@@ -55,12 +55,12 @@ export default function NoteContent() {
         ...currentNote,
         content: noteContent
       }, noteTitle);
-      notesDispatch({ type: RENAME_NOTE, payload: {
+      notesDispatch(noteActions.renameNote({
         title: noteTitle,
         filename: newFilename
-      }});
+      }));
     } catch (error) {
-      notesDispatch({ type: SET_NOTE_TITLE, payload: currentNote.title });
+      notesDispatch(noteActions.setNoteTitle(currentNote.title));
       showMessageBox({
         type: 'error',
         message: 'Failed to rename note',

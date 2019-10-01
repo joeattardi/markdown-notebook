@@ -5,8 +5,8 @@ import Modal from 'styled-react-modal';
 
 import Button from './Button';
 
-import { SET_RENAMING_NOTEBOOK } from './store/app';
-import { RENAME_NOTEBOOK } from './store/notes';
+import { actions as appActions } from './store/app';
+import { actions as noteActions } from './store/notes';
 import { App, Notes } from './store';
 
 import { showMessageBox } from './interactions';
@@ -56,7 +56,7 @@ export default function RenameNotebookModal() {
   const [nameValue, setNameValue] = useState(currentNotebook ? currentNotebook.name : '');
 
   function closeModal() {
-    appDispatch({ type: SET_RENAMING_NOTEBOOK, payload: false });
+    appDispatch(appActions.setRenamingNotebook(false));
   }
 
   function cancel() {
@@ -69,7 +69,7 @@ export default function RenameNotebookModal() {
 
     try {
       await renameNotebook(currentNotebook.name, nameValue);
-      notesDispatch({ type: RENAME_NOTEBOOK, payload: nameValue });
+      notesDispatch(noteActions.renameNotebook(nameValue));
     } catch (error) {
       showMessageBox({
         type: 'error',

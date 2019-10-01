@@ -16,11 +16,7 @@ import { showMessageBox } from './interactions';
 import * as ipc from './ipc';
 import * as actions from './actions';
 
-import {
-  SET_CURRENT_NOTEBOOK,
-  SET_NOTEBOOKS,
-  SET_NOTES,
-} from './store/notes';
+import { actions as noteActions } from './store/notes';
 import { App, Notes } from './store';
 
 const Container = styled.div`
@@ -79,7 +75,7 @@ function Sidebar({ createSnackbar }) {
   const appDispatch = useContext(App.Dispatch);
 
   function onClickNotebook(notebook) {
-    notesDispatch({ type: SET_CURRENT_NOTEBOOK, payload: notebook });
+    notesDispatch(noteActions.setCurrentNotebook(notebook));
   }
 
   function onClickNew() {
@@ -98,7 +94,7 @@ function Sidebar({ createSnackbar }) {
     async function getNotebooks() {
       try {
         const notebooks = await ipc.getNotebooks();
-        notesDispatch({ type: SET_NOTEBOOKS, payload: notebooks });
+        notesDispatch(noteActions.setNotebooks(notebooks));
       } catch (error) {
         showMessageBox({
           type: 'error',
@@ -116,7 +112,7 @@ function Sidebar({ createSnackbar }) {
       if (currentNotebook) {
         try {
           const notes = await ipc.getNotes(currentNotebook.name);
-          notesDispatch({ type: SET_NOTES, payload: notes });
+          notesDispatch(noteActions.setNotes(notes));
         } catch (error) {
           showMessageBox({
             type: 'error',

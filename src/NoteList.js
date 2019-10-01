@@ -9,8 +9,8 @@ import Note from './Note';
 import { showMessageBox } from './interactions';
 import { createNote, getNote, saveNote } from './ipc';
 
-import { ADD_NOTE, SET_CURRENT_NOTE, SET_NOTE_CONTENT, SET_NOTE_TITLE } from './store/notes';
-import { SET_EDITING } from './store/app';
+import { actions as noteActions } from './store/notes';
+import { actions as appActions } from './store/app';
 import { App, Notes } from './store';
 
 const Container = styled.div`
@@ -28,8 +28,8 @@ export default function NoteList() {
   async function onClickNew() {
     try {
       const newNote = await createNote(currentNotebook.name);
-      notesDispatch({ type: ADD_NOTE, payload: newNote });
-      appDispatch({ type: SET_EDITING, payload: true });
+      notesDispatch(noteActions.addNote(newNote));
+      appDispatch(appActions.setEditing(true));
     } catch (error) {
       showMessageBox({
         type: 'error',
@@ -55,7 +55,7 @@ export default function NoteList() {
       }
     }
 
-    notesDispatch({ type: SET_CURRENT_NOTE, payload: note });
+    notesDispatch(noteActions.setCurrentNote(note));
   }
 
   useEffect(() => {
@@ -63,8 +63,8 @@ export default function NoteList() {
       if (currentNote) {
         try {
           const note = await getNote(currentNote.filename);
-          notesDispatch({ type: SET_NOTE_CONTENT, payload: note.content });
-          notesDispatch({ type: SET_NOTE_TITLE, payload: note.title });
+          notesDispatch(noteActions.setNoteContent(note.content));
+          notesDispatch(noteActions.setNoteTitle(note.title));
         } catch (error) {
           showMessageBox({
             type: 'error',
@@ -73,7 +73,7 @@ export default function NoteList() {
           });
         }
       } else {
-        notesDispatch({ type: SET_NOTE_CONTENT, payload: '' });
+        notesDispatch(noteActions.setNoteContent(''));
       }
     }
 

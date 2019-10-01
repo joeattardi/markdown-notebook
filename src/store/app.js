@@ -1,8 +1,14 @@
 import React, { createContext, useReducer } from 'react';
 
-export const SET_EDITING = 'SET_EDITING';
-export const TOGGLE_EDITING = 'TOGGLE_EDITING';
-export const SET_RENAMING_NOTEBOOK = 'SET_RENAMING_NOTEBOOK';
+const SET_EDITING = 'SET_EDITING';
+const TOGGLE_EDITING = 'TOGGLE_EDITING';
+const SET_RENAMING_NOTEBOOK = 'SET_RENAMING_NOTEBOOK';
+
+export const actions = {
+  setEditing: isEditing => ({ type: SET_EDITING, payload: isEditing }),
+  setRenamingNotebook: isRenamingNotebook => ({ type: SET_RENAMING_NOTEBOOK, payload: isRenamingNotebook }),
+  toggleEditing: () => ({ type: TOGGLE_EDITING })
+};
 
 const State = createContext();
 const Dispatch = createContext();
@@ -12,8 +18,8 @@ const initialState = {
   isRenamingNotebook: false
 };
 
-function reducer(state, action) {
-  switch (action.type) {
+function reducer(state, { type, payload }) {
+  switch (type) {
     case TOGGLE_EDITING:
       return {
         ...state,
@@ -22,12 +28,12 @@ function reducer(state, action) {
     case SET_EDITING:
       return {
         ...state,
-        isEditing: action.payload
+        isEditing: payload
       };
     case SET_RENAMING_NOTEBOOK:
       return {
         ...state,
-        isRenamingNotebook: action.payload
+        isRenamingNotebook: payload
       };
     default:
       return state;

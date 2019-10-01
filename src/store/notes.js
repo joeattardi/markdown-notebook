@@ -3,18 +3,33 @@ import slugify from 'slugify';
 
 import { sortBy } from '../util';
 
-export const SET_NOTES = 'SET_NOTES';
-export const SET_NOTEBOOKS = 'SET_NOTEBOOKS';
-export const SET_CURRENT_NOTEBOOK = 'SET_CURRENT_NOTEBOOK';
-export const SET_CURRENT_NOTE = 'SET_CURRENT_NOTE';
-export const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
-export const SET_NOTE_TITLE = 'SET_NOTE_TITLE';
-export const ADD_NOTE = 'ADD_NOTE';
-export const DELETE_NOTE = 'DELETE_NOTE';
-export const RENAME_NOTE = 'RENAME_NOTE';
-export const ADD_NOTEBOOK = 'ADD_NOTEBOOK';
-export const DELETE_NOTEBOOK = 'DELETE_NOTEBOOK';
-export const RENAME_NOTEBOOK = 'RENAME_NOTEBOOK';
+const SET_NOTES = 'SET_NOTES';
+const SET_NOTEBOOKS = 'SET_NOTEBOOKS';
+const SET_CURRENT_NOTEBOOK = 'SET_CURRENT_NOTEBOOK';
+const SET_CURRENT_NOTE = 'SET_CURRENT_NOTE';
+const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
+const SET_NOTE_TITLE = 'SET_NOTE_TITLE';
+const ADD_NOTE = 'ADD_NOTE';
+const DELETE_NOTE = 'DELETE_NOTE';
+const RENAME_NOTE = 'RENAME_NOTE';
+const ADD_NOTEBOOK = 'ADD_NOTEBOOK';
+const DELETE_NOTEBOOK = 'DELETE_NOTEBOOK';
+const RENAME_NOTEBOOK = 'RENAME_NOTEBOOK';
+
+export const actions = {
+  setNotes: notes => ({ type: SET_NOTES, payload: notes }),
+  setNotebooks: notebooks => ({ type: SET_NOTEBOOKS, payload: notebooks }),
+  setCurrentNotebook: currentNotebook => ({ type: SET_CURRENT_NOTEBOOK, payload: currentNotebook }),
+  setCurrentNote: currentNote => ({ type: SET_CURRENT_NOTE, payload: currentNote }),
+  setNoteContent: noteContent => ({ type: SET_NOTE_CONTENT, payload: noteContent }),
+  setNoteTitle: title => ({ type: SET_NOTE_TITLE, payload: title }),
+  addNote: note => ({ type: ADD_NOTE, payload: note }),
+  deleteNote: () => ({ type: DELETE_NOTE }),
+  renameNote: name => ({ type: RENAME_NOTE, payload: name }),
+  addNotebook: notebook => ({ type: ADD_NOTEBOOK, payload: notebook }),
+  deleteNotebook: () => ({ type: DELETE_NOTEBOOK }),
+  renameNotebook: name => ({ type: RENAME_NOTEBOOK, payload: name })
+};
 
 const State = createContext();
 const Dispatch = createContext();
@@ -28,44 +43,44 @@ const initialState = {
   noteTitle: ''
 };
 
-function reducer(state, action) {
-  switch (action.type) {
+function reducer(state, { type, payload }) {
+  switch (type) {
     case SET_NOTEBOOKS:
       return {
         ...state,
-        currentNotebook: action.payload[0],
-        notebooks: action.payload
+        currentNotebook: payload[0],
+        notebooks: payload
       };
     case SET_CURRENT_NOTEBOOK:
       return {
         ...state,
-        currentNotebook: action.payload
+        currentNotebook: payload
       };
     case SET_NOTES:
       return {
         ...state,
-        currentNote: action.payload[0],
-        notes: action.payload
+        currentNote: payload[0],
+        notes: payload
       };
     case SET_CURRENT_NOTE:
       return {
         ...state,
-        currentNote: action.payload,
-        noteTitle: action.payload.title
+        currentNote: payload,
+        noteTitle: payload.title
       };
     case SET_NOTE_CONTENT:
       return {
         ...state,
-        noteContent: action.payload
+        noteContent: payload
       };
     case ADD_NOTE:
       return {
         ...state,
         notes: sortBy([
           ...state.notes,
-          action.payload
+          payload
         ], 'title'),
-        currentNote: action.payload,
+        currentNote: payload,
         notebooks: state.notebooks.map(notebook => {
           if (notebook.id === state.currentNotebook.id) {
             return {
@@ -98,7 +113,7 @@ function reducer(state, action) {
       case SET_NOTE_TITLE:
         return {
           ...state,
-          noteTitle: action.payload
+          noteTitle: payload
         };
       case RENAME_NOTE:
         return {
@@ -107,8 +122,8 @@ function reducer(state, action) {
             if (note.filename === state.currentNote.filename) {
               return {
                 ...note,
-                ...action.payload,
-                id: slugify(action.payload.title).toLowerCase()
+                ...payload,
+                id: slugify(payload.title).toLowerCase()
               };
             }
 
@@ -116,8 +131,8 @@ function reducer(state, action) {
           }), 'title'),
           currentNote: {
             ...state.currentNote,
-            ...action.payload,
-            id: slugify(action.payload.title).toLowerCase()
+            ...payload,
+            id: slugify(payload.title).toLowerCase()
           }
         };
       case ADD_NOTEBOOK:
@@ -125,9 +140,9 @@ function reducer(state, action) {
           ...state,
           notebooks: sortBy([
             ...state.notebooks,
-            action.payload
+            payload
           ], 'name'),
-          currentNotebook: action.payload
+          currentNotebook: payload
         };
       case DELETE_NOTEBOOK:
         const currentNotebookIndex = state.notebooks.findIndex(notebook => notebook.id === state.currentNotebook.id);
@@ -143,16 +158,16 @@ function reducer(state, action) {
             if (notebook.id === state.currentNotebook.id) {
               return { 
                 ...notebook, 
-                name: action.payload,
-                id: slugify(action.payload)
+                name: payload,
+                id: slugify(payload)
               }
             }
             return notebook;
           }), 'name'),
           currentNotebook: {
             ...state.currentNotebook,
-            name: action.payload,
-            id: slugify(action.payload)
+            name: payload,
+            id: slugify(payload)
           }
         };
     default:

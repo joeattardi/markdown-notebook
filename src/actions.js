@@ -1,14 +1,14 @@
 import * as ipc from './ipc';
 
-import { SET_EDITING, TOGGLE_EDITING, SET_RENAMING_NOTEBOOK } from './store/app';
-import { ADD_NOTEBOOK, ADD_NOTE, DELETE_NOTE, DELETE_NOTEBOOK, SET_NOTES } from './store/notes';
+import { actions as appActions } from './store/app';
+import { actions as noteActions } from './store/notes';
 
 import { showMessageBox } from './interactions';
 
 export async function createNotebook(dispatch) {
   try {
     const newNotebook = await ipc.createNotebook();
-    dispatch({ type: ADD_NOTEBOOK, payload: newNotebook });
+    dispatch(noteActions.addNotebook(newNotebook));
   } catch (error) {
     showMessageBox({
       message: 'Failed to create a new notebook',
@@ -21,8 +21,8 @@ export async function createNotebook(dispatch) {
 export async function createNote(notesDispatch, appDispatch, notebook) {
   try {
     const newNote = await ipc.createNote(notebook);
-    notesDispatch({ type: ADD_NOTE, payload: newNote });
-    appDispatch({ type: SET_EDITING, payload: true });
+    notesDispatch(noteActions.addNote(newNote));
+    appDispatch(appActions.setEditing(true));
     ipc.setIsEditing(true);
   } catch (error) {
     showMessageBox({
@@ -45,7 +45,7 @@ export async function deleteNote(notesDispatch, createSnackbar, currentNote) {
   if (result === 1) {
     try {
       await ipc.deleteNote(currentNote.filename);
-      notesDispatch({ type: DELETE_NOTE });
+      notesDispatch(noteActions.deleteNote());
       createSnackbar({
         message: `Note "${currentNote.title}" was deleted.`,
         theme: 'success'
@@ -72,14 +72,14 @@ export async function deleteNotebook(notesDispatch, createSnackbar, notebooks, c
   if (result === 1) {
     try {
       await ipc.deleteNotebook(currentNotebook.name);
-      notesDispatch({ type: DELETE_NOTEBOOK });
+      notesDispatch(noteActions.deleteNotebook());
       createSnackbar({
         message: `Notebook "${currentNotebook.name}" was deleted.`,
         theme: 'success'
       });
 
       if (notebooks.length === 1) { // we deleted the last notebook
-        notesDispatch({ type: SET_NOTES, payload: [] });
+        notesDispatch(noteActions.setNotes([]));
       }
     } catch (error) {
       showMessageBox({
@@ -92,7 +92,7 @@ export async function deleteNotebook(notesDispatch, createSnackbar, notebooks, c
 }
 
 export async function toggleEdit(appDispatch, isEditing, currentNote, noteContent) {
-  appDispatch({ type: TOGGLE_EDITING });
+  appDispatch(appActions.toggleEditing());
 
   if (isEditing) {
     try {
@@ -113,5 +113,5 @@ export async function toggleEdit(appDispatch, isEditing, currentNote, noteConten
 }
 
 export function renameNotebook(appDispatch) {
-  appDispatch({ type: SET_RENAMING_NOTEBOOK, payload: true });
+  appDispatch(appActions.setRenamingNotebook(true));
 }
