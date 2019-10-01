@@ -1,4 +1,7 @@
+const path = require('path');
 const { app, ipcMain, Menu } = require('electron');
+
+const openAboutWindow = require('electron-about-window').default;
 
 let menu;
 let menuTemplate;
@@ -8,7 +11,10 @@ exports.buildApplicationMenu = function() {
     {
       label: app.getName(),
       submenu: [
-        { role: 'about' },
+        {
+          label: 'About Markdown Notebook',
+          click: showAbout
+        },
         { type: 'separator' },
         { role: 'hide' },
         { role: 'hideothers' },
@@ -78,6 +84,17 @@ exports.buildApplicationMenu = function() {
   menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 };
+
+function showAbout(menuItem, browserWindow, event) {
+  openAboutWindow({
+    icon_path: path.resolve(__dirname, '..', 'icons', 'note.png'),
+    homepage: 'https://github.com/joeattardi/markdown-notebook',
+    copyright: 'Copyright (c) 2019 Joe Attardi',
+    use_version_info: false,
+    bug_report_url: 'https://github.com/joeattardi/markdown-notebook/issues',
+    bug_link_text: 'Found a bug?'
+  });
+}
 
 function newNotebook(menuItem, browserWindow, event) {
   browserWindow.webContents.send('menu:createNotebook');
