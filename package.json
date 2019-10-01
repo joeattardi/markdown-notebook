@@ -36,7 +36,7 @@
     "eject": "react-scripts eject",
     "electron": "electron .",
     "dev": "concurrently \"BROWSER=none PORT=4000 react-scripts start\" \"wait-on http://localhost:4000 && electron .\"",
-    "package:mac": "react-scripts build && electron-packager . --out=dist --overwrite && electron-installer-dmg ./dist/Markdown\\ Notebook-darwin-x64/Markdown\\ Notebook.app \"Markdown Notebook\" --out dist"
+    "package:mac": "react-scripts build && electron-packager . --out=dist --overwrite --icon=./icons/note.icns && electron-installer-dmg ./dist/Markdown\\ Notebook-darwin-x64/Markdown\\ Notebook.app \"Markdown Notebook\" --out=dist --overwrite --icon=./icons/note.icns"
   },
   "eslintConfig": {
     "extends": "react-app"
