@@ -17,7 +17,8 @@ import {
   deleteNote,
   deleteNotebook,
   toggleEdit,
-  renameNotebook 
+  renameNotebook,
+  renameNote
 } from './actions';
 
 import { App, Notes } from './store';
@@ -37,7 +38,7 @@ const Container = styled.div`
 `;
 
 function Main({ createSnackbar }) {
-  const { currentNotebook, currentNote, notebooks, noteContent } = useContext(Notes.State);
+  const { currentNotebook, currentNote, notebooks, noteContent, noteTitle } = useContext(Notes.State);
   const { isEditing } = useContext(App.State);
 
   const appDispatch = useContext(App.Dispatch);
@@ -80,8 +81,9 @@ function Main({ createSnackbar }) {
     ipcRenderer.removeAllListeners('menu:toggleEdit');
     ipcRenderer.on('menu:toggleEdit', async event => {
       toggleEdit(appDispatch, isEditing, currentNote, noteContent);
+      renameNote(notesDispatch, currentNotebook, currentNote, noteContent, noteTitle);
     });
-  }, [appDispatch, isEditing, currentNote, noteContent]);
+  }, [appDispatch, notesDispatch, isEditing, currentNote, noteContent, currentNotebook, noteTitle]);
 
   return (
     <div>

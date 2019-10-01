@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import NoteEditor from './NoteEditor';
 import NoteView from './NoteView';
 
-import { showMessageBox } from './interactions';
-import { debouncedSave, renameNote } from './ipc';
+import { renameNote } from './actions';
+import { debouncedSave } from './ipc';
 
 import { actions as appActions } from './store/app';
 import { actions as noteActions } from './store/notes';
@@ -47,26 +47,11 @@ export default function NoteContent() {
 
   function onExitEdit() {
     appDispatch(appActions.setEditing(false));
+    onRename();
   }
 
-  async function onRename() {
-    try {
-      const newFilename = await renameNote(currentNotebook.name, {
-        ...currentNote,
-        content: noteContent
-      }, noteTitle);
-      notesDispatch(noteActions.renameNote({
-        title: noteTitle,
-        filename: newFilename
-      }));
-    } catch (error) {
-      notesDispatch(noteActions.setNoteTitle(currentNote.title));
-      showMessageBox({
-        type: 'error',
-        message: 'Failed to rename note',
-        detail: error.message
-      });
-    }
+  function onRename() {
+    renameNote(notesDispatch, currentNotebook, currentNote, noteContent, noteTitle);
   }
 
   return (

@@ -112,6 +112,26 @@ export async function toggleEdit(appDispatch, isEditing, currentNote, noteConten
   ipc.setIsEditing(!isEditing);
 }
 
+export async function renameNote(notesDispatch, currentNotebook, currentNote, noteContent, newTitle) {
+  try {
+    const newFilename = await ipc.renameNote(currentNotebook.name, {
+      ...currentNote,
+      content: noteContent
+    }, newTitle);
+    notesDispatch(noteActions.renameNote({
+      title: newTitle,
+      filename: newFilename
+    }));
+  } catch (error) {
+    notesDispatch(noteActions.setNoteTitle(currentNote.title));
+    showMessageBox({
+      type: 'error',
+      message: 'Failed to rename note',
+      detail: error.message
+    });
+  }
+}
+
 export function renameNotebook(appDispatch) {
   appDispatch(appActions.setRenamingNotebook(true));
 }
