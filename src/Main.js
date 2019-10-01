@@ -4,6 +4,7 @@ import SplitPane from 'react-split-pane';
 import { wrapComponent } from 'react-snackbar-alert';
 import styled from 'styled-components';
 
+import LoadingScreen from './LoadingScreen';
 import Header from './Header';
 import NoteContent from './NoteContent';
 import NoteList from './NoteList';
@@ -39,7 +40,7 @@ const Container = styled.div`
 
 function Main({ createSnackbar }) {
   const { currentNotebook, currentNote, notebooks, noteContent, noteTitle } = useContext(Notes.State);
-  const { isEditing } = useContext(App.State);
+  const { isEditing, isLoading } = useContext(App.State);
 
   const appDispatch = useContext(App.Dispatch);
   const notesDispatch = useContext(Notes.Dispatch);
@@ -87,6 +88,7 @@ function Main({ createSnackbar }) {
 
   return (
     <div>
+      {isLoading ? <LoadingScreen /> : null}
       <Container>
         <SplitPane split="vertical" minSize={250} maxSize={500}>
           <Sidebar />

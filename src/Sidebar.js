@@ -16,6 +16,7 @@ import { showMessageBox } from './interactions';
 import * as ipc from './ipc';
 import * as actions from './actions';
 
+import { actions as appActions } from './store/app';
 import { actions as noteActions } from './store/notes';
 import { App, Notes } from './store';
 
@@ -119,12 +120,14 @@ function Sidebar({ createSnackbar }) {
             message: 'Failed to load note list',
             detail: error.message
           });
+        } finally {
+          appDispatch(appActions.setLoading(false));
         }
       }
     }
 
     getNotes();
-  }, [notesDispatch, currentNotebook]);
+  }, [appDispatch, notesDispatch, currentNotebook]);
 
   return (
     <Container>

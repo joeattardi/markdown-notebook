@@ -1,11 +1,13 @@
 import React, { createContext, useReducer } from 'react';
 
 const SET_EDITING = 'SET_EDITING';
+const SET_LOADING = 'SET_LOADING';
 const TOGGLE_EDITING = 'TOGGLE_EDITING';
 const SET_RENAMING_NOTEBOOK = 'SET_RENAMING_NOTEBOOK';
 
 export const actions = {
   setEditing: isEditing => ({ type: SET_EDITING, payload: isEditing }),
+  setLoading: isLoading => ({ type: SET_LOADING, payload: isLoading }),
   setRenamingNotebook: isRenamingNotebook => ({ type: SET_RENAMING_NOTEBOOK, payload: isRenamingNotebook }),
   toggleEditing: () => ({ type: TOGGLE_EDITING })
 };
@@ -15,7 +17,8 @@ const Dispatch = createContext();
 
 const initialState = {
   isEditing: false,
-  isRenamingNotebook: false
+  isRenamingNotebook: false,
+  isLoading: true
 };
 
 function reducer(state, { type, payload }) {
@@ -29,6 +32,11 @@ function reducer(state, { type, payload }) {
       return {
         ...state,
         isEditing: payload
+      };
+    case SET_LOADING:
+      return {
+        ...state,
+        isLoading: payload
       };
     case SET_RENAMING_NOTEBOOK:
       return {
