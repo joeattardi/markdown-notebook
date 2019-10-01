@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { UnControlled as CodeMirror } from 'react-codemirror2';
+import { Controlled as CodeMirror } from 'react-codemirror2';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
@@ -77,8 +77,7 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
         onBlur={onRename} />
       <CodeMirror
         ref={editorRef}
-        autoCursor={false}
-        onChange={onEditorChange}
+        onBeforeChange={onEditorChange}
         options={{
           mode: 'markdown'
         }}
