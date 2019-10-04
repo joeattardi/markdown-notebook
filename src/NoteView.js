@@ -9,7 +9,7 @@ const Title = styled.h1`
 export default function NoteView({ title, content }) {
   return (
     <div>
-      <Title>{title}</Title>
+      <Title>{title || 'Untitled'}</Title>
       <ReactMarkdown source={content} />
     </div>
   );

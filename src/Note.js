@@ -20,7 +20,7 @@ const Container = styled.div`
 export default function Note({ active, note, onClick }) {
   return (
     <Container className={active ? 'active' : ''} onClick={() => onClick(note)}>
-      {note.title}
+      {note.title || 'Untitled'}
     </Container>
   );
 }

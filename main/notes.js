@@ -123,12 +123,13 @@ function getNote(filename) {
 }
 
 function getUniqueFilename(notebook, baseName) {
+  debug(`Finding unique filename for: ${baseName}`);
   let counter = 1;
   let name = baseName;
   let filename = path.resolve(NOTE_DIRECTORY, notebook, slugify(name).toLowerCase() + '.md');
 
   while (fs.existsSync(filename)) {
-    name = `${name} ${counter++}`;
+    name = `${baseName} ${counter++}`;
     filename = path.resolve(NOTE_DIRECTORY, notebook, slugify(name).toLowerCase() + '.md');
   }
 
@@ -140,7 +141,7 @@ function renameNote(notebook, note, newName) {
 
   const newNote = {
     title: newName,
-    filename: getUniqueFilename(notebook, newName),
+    filename: getUniqueFilename(notebook, newName || 'Untitled'),
     content: note.content
   };
   
@@ -192,13 +193,6 @@ function getNoteData(notebook, filename) {
     });
 
     reader.on('close', () => {
-      if (!header) {
-        debug(`Didn't find any front matter for ${filename}, using ${slug}`);
-        header = {
-          ...header,
-          title: slug
-        }
-      }
       resolve({
         id: slug,
         ...header

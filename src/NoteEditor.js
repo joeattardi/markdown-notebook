@@ -72,6 +72,7 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
     <Container onKeyDown={onKeyDown}>
       <TitleInput
         value={title}
+        placeholder="Enter a title..."
         onChange={event => onTitleChange(event.target.value)}
         onKeyDown={onTitleKeyDown}
         onBlur={onRename} />
