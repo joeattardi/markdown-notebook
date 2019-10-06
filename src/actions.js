@@ -33,21 +33,21 @@ export async function createNote(notesDispatch, appDispatch, notebook) {
   }
 }
 
-export async function deleteNote(notesDispatch, createSnackbar, currentNote) {
+export async function deleteNote(notesDispatch, createSnackbar, note) {
   const result = showMessageBox({
     type: 'question',
     buttons: ['Cancel', 'Confirm'],
     message: 'Delete Note?',
-    detail: `This will permanently delete the note "${currentNote.title}" and cannot be undone.`,
+    detail: `This will permanently delete the note "${note.title}" and cannot be undone.`,
     defaultId: 1
   });
 
   if (result === 1) {
     try {
-      await ipc.deleteNote(currentNote.filename);
-      notesDispatch(noteActions.deleteNote());
+      await ipc.deleteNote(note.filename);
+      notesDispatch(noteActions.deleteNote(note));
       createSnackbar({
-        message: `Note "${currentNote.title}" was deleted.`,
+        message: `Note "${note.title}" was deleted.`,
         theme: 'success'
       });
     } catch (error) {

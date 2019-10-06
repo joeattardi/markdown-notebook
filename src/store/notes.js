@@ -24,7 +24,7 @@ export const actions = {
   setNoteContent: noteContent => ({ type: SET_NOTE_CONTENT, payload: noteContent }),
   setNoteTitle: title => ({ type: SET_NOTE_TITLE, payload: title }),
   addNote: note => ({ type: ADD_NOTE, payload: note }),
-  deleteNote: () => ({ type: DELETE_NOTE }),
+  deleteNote: note => ({ type: DELETE_NOTE, payload: note }),
   renameNote: name => ({ type: RENAME_NOTE, payload: name }),
   addNotebook: notebook => ({ type: ADD_NOTEBOOK, payload: notebook }),
   deleteNotebook: () => ({ type: DELETE_NOTEBOOK }),
@@ -93,11 +93,12 @@ function reducer(state, { type, payload }) {
         })
       };
     case DELETE_NOTE:
-      const currentNoteIndex = state.notes.findIndex(note => note.filename === state.currentNote.filename);
+      console.log(payload);
+      const currentNoteIndex = state.notes.findIndex(note => note.filename === payload.filename);
 
       return {
         ...state,
-        notes: state.notes.filter(note => note.filename !== state.currentNote.filename),
+        notes: state.notes.filter(note => note.filename !== payload.filename),
         notebooks: state.notebooks.map(notebook => {
           if (notebook.id === state.currentNotebook.id) {
             return {
@@ -108,7 +109,7 @@ function reducer(state, { type, payload }) {
 
           return notebook;
         }),
-        currentNote: currentNoteIndex === state.notes.length - 1 ? state.notes[currentNoteIndex - 1] : state.notes[currentNoteIndex + 1]
+        currentNote: payload.filename === state.currentNote.filename ? currentNoteIndex === state.notes.length - 1 ? state.notes[currentNoteIndex - 1] : state.notes[currentNoteIndex + 1] : state.currentNote
       };
       case SET_NOTE_TITLE:
         return {

@@ -2,6 +2,8 @@ import React from 'react';
 
 import styled from 'styled-components';
 
+const { remote } = window.require('electron');
+
 const Container = styled.div`
   padding: 0.3rem 0.5rem;
   cursor: pointer;
@@ -17,9 +19,24 @@ const Container = styled.div`
   }
 `;
 
-export default function Note({ active, note, onClick }) {
+export default function Note({ active, note, onClick, onDelete }) {
+  const contextMenu = remote.Menu.buildFromTemplate([
+    {
+      label: 'Delete',
+      click: () => onDelete(note)
+    }
+  ]);
+
+  function clickNote(event) {
+    onClick(note);
+  }
+
+  function showMenu(event) {
+    contextMenu.popup();
+  }
+  
   return (
-    <Container className={active ? 'active' : ''} onClick={() => onClick(note)}>
+    <Container className={active ? 'active' : ''} onClick={clickNote} onContextMenu={showMenu}>
       {note.title || 'Untitled'}
     </Container>
   );

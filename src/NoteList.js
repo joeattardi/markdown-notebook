@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { wrapComponent } from 'react-snackbar-alert';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
@@ -9,6 +10,8 @@ import Note from './Note';
 import { showMessageBox } from './interactions';
 import { createNote, getNote, saveNote } from './ipc';
 
+import { deleteNote } from './actions';
+
 import { actions as noteActions } from './store/notes';
 import { actions as appActions } from './store/app';
 import { App, Notes } from './store';
@@ -18,7 +21,7 @@ const Container = styled.div`
   height: calc(100% - 3.25rem);
 `;
 
-export default function NoteList() {
+function NoteList({ createSnackbar }) {
   const { notes, currentNote, currentNotebook, noteContent } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
@@ -37,6 +40,10 @@ export default function NoteList() {
         detail: error.message
       });
     }
+  }
+
+  function onDeleteNote(note) {
+    deleteNote(notesDispatch, createSnackbar, note);
   }
 
   async function onClickNote(note) {
@@ -87,6 +94,7 @@ export default function NoteList() {
           active={currentNote.filename === note.filename}
           key={note.filename}
           note={note}
+          onDelete={onDeleteNote}
           onClick={onClickNote} />
       )) : currentNotebook ? <NoNotesMessage onClickNew={onClickNew} /> : null}
     </Container>
@@ -141,3 +149,5 @@ function NoNotesMessage({ onClickNew }) {
     </StyledMessage>
   );
 }
+
+export default wrapComponent(NoteList);
