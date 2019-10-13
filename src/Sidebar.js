@@ -158,6 +158,8 @@ function Sidebar({ createSnackbar }) {
               key={notebook.id}
               onClick={onClickNotebook}
               notebook={notebook}
+              onRename={onClickRename}
+              onDelete={onClickDelete}
               active={currentNotebook.id === notebook.id}
             />
           ))}

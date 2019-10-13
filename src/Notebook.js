@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components';
 
+const { remote } = window.require('electron');
+
 const Container = styled.li`
   list-style: none;
   padding: 0.3rem 0.5rem;
@@ -32,9 +34,25 @@ const Count = styled.div`
   font-weight: bold;
 `;
 
-export default function Notebook({ notebook, active, onClick }) {
+export default function Notebook({ notebook, active, onClick, onRename, onDelete}) {
+  const contextMenu = remote.Menu.buildFromTemplate([
+    {
+      label: 'Delete',
+      click: onDelete
+    },
+    {
+      label: 'Rename',
+      click: onRename
+    }
+  ]);
+
+  function showMenu() {
+    onClick(notebook);
+    contextMenu.popup();
+  }
+  
   return (
-    <Container className={active ? 'active' : ''} onClick={() => onClick(notebook)} title={notebook.name}>
+    <Container className={active ? 'active' : ''} onClick={() => onClick(notebook)} title={notebook.name} onContextMenu={showMenu}>
       <Name><FontAwesomeIcon icon={faBook} style={{ marginRight: '0.25rem' }}/> {notebook.name}</Name>
       <Count>{notebook.count}</Count>
     </Container>
