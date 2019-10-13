@@ -9,6 +9,8 @@ import 'codemirror/mode/markdown/markdown';
 
 import { Notes } from './store';
 
+const { remote } = window.require('electron');
+
 const Container = styled.div`
   height: calc(100% - 4.2rem);
   position: relative;
@@ -42,6 +44,12 @@ const TitleInput = styled.input`
 `;
 
 export default function NoteEditor({ title, content, onChange, onTitleChange, onRename, onExitEdit }) {
+  const contextMenu = remote.Menu.buildFromTemplate([
+    { role: 'cut' },
+    { role: 'copy' },
+    { role: 'paste' }
+  ]);
+
   const editorRef = useRef(null);
   const { currentNote } = useContext(Notes.State);
 
@@ -63,13 +71,17 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
     }
   }
 
+  function showMenu() {
+    contextMenu.popup();
+  }
+
   useEffect(() => {
     editorRef.current.editor.focus();
     editorRef.current.editor.setCursor({ line: 0, ch: 0 });
   }, [currentNote]);
   
   return (
-    <Container onKeyDown={onKeyDown}>
+    <Container onKeyDown={onKeyDown} onContextMenu={showMenu}>
       <TitleInput
         value={title}
         placeholder="Enter a title..."
