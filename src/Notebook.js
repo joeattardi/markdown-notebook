@@ -38,7 +38,7 @@ export default function Notebook({ notebook, active, onClick, onRename, onDelete
   const contextMenu = remote.Menu.buildFromTemplate([
     {
       label: 'Delete',
-      click: onDelete
+      click: () => onDelete(notebook)
     },
     {
       label: 'Rename',

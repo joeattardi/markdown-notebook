@@ -79,6 +79,10 @@ function Sidebar({ createSnackbar }) {
     notesDispatch(noteActions.setCurrentNotebook(notebook));
   }
 
+  function onDeleteNotebook(notebook) {
+    actions.deleteNotebook(notesDispatch, createSnackbar, notebooks, notebook);
+  }
+
   function onClickNew() {
     actions.createNotebook(notesDispatch);
   }
@@ -159,7 +163,7 @@ function Sidebar({ createSnackbar }) {
               onClick={onClickNotebook}
               notebook={notebook}
               onRename={onClickRename}
-              onDelete={onClickDelete}
+              onDelete={onDeleteNotebook}
               active={currentNotebook.id === notebook.id}
             />
           ))}

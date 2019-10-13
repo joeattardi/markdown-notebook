@@ -27,7 +27,7 @@ export const actions = {
   deleteNote: note => ({ type: DELETE_NOTE, payload: note }),
   renameNote: name => ({ type: RENAME_NOTE, payload: name }),
   addNotebook: notebook => ({ type: ADD_NOTEBOOK, payload: notebook }),
-  deleteNotebook: () => ({ type: DELETE_NOTEBOOK }),
+  deleteNotebook: notebook => ({ type: DELETE_NOTEBOOK, payload: notebook }),
   renameNotebook: name => ({ type: RENAME_NOTEBOOK, payload: name })
 };
 
@@ -93,7 +93,6 @@ function reducer(state, { type, payload }) {
         })
       };
     case DELETE_NOTE:
-      console.log(payload);
       const currentNoteIndex = state.notes.findIndex(note => note.filename === payload.filename);
 
       return {
@@ -146,11 +145,18 @@ function reducer(state, { type, payload }) {
           currentNotebook: payload
         };
       case DELETE_NOTEBOOK:
-        const currentNotebookIndex = state.notebooks.findIndex(notebook => notebook.id === state.currentNotebook.id);
+        if (payload.id === state.currentNotebook.id) {
+          const currentNotebookIndex = state.notebooks.findIndex(notebook => notebook.id === payload.id);
+          return {
+            ...state,
+            notebooks: state.notebooks.filter(notebook => notebook.id !== payload.id),
+            currentNotebook: currentNotebookIndex === state.notebooks.length - 1 ? state.notebooks[currentNotebookIndex - 1] : state.notebooks[currentNotebookIndex + 1]
+          };
+        }
+
         return {
           ...state,
-          notebooks: state.notebooks.filter(notebook => notebook.id !== state.currentNotebook.id),
-          currentNotebook: currentNotebookIndex === state.notebooks.length - 1 ? state.notebooks[currentNotebookIndex - 1] : state.notebooks[currentNotebookIndex + 1]
+          notebooks: state.notebooks.filter(notebook => notebook.id !== payload.id)
         };
       case RENAME_NOTEBOOK:
         return {

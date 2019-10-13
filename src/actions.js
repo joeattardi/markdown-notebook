@@ -60,21 +60,21 @@ export async function deleteNote(notesDispatch, createSnackbar, note) {
   }
 }
 
-export async function deleteNotebook(notesDispatch, createSnackbar, notebooks, currentNotebook) {
+export async function deleteNotebook(notesDispatch, createSnackbar, notebooks, notebook) {
   const result = showMessageBox({
     type: 'question',
     buttons: ['Cancel', 'Confirm'],
     message: 'Delete Notebook?',
-    detail: `This will delete all notes in the notebook "${currentNotebook.name}" and cannot be undone.`,
+    detail: `This will delete all notes in the notebook "${notebook.name}" and cannot be undone.`,
     defaultId: 1
   });
 
   if (result === 1) {
     try {
-      await ipc.deleteNotebook(currentNotebook.name);
-      notesDispatch(noteActions.deleteNotebook());
+      await ipc.deleteNotebook(notebook.name);
+      notesDispatch(noteActions.deleteNotebook(notebook));
       createSnackbar({
-        message: `Notebook "${currentNotebook.name}" was deleted.`,
+        message: `Notebook "${notebook.name}" was deleted.`,
         theme: 'success'
       });
 
