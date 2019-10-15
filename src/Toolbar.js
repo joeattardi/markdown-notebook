@@ -1,16 +1,22 @@
 import React, { useContext } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencilAlt, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faImage, faPencilAlt, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import fileUrl from 'file-url';
 import { wrapComponent } from 'react-snackbar-alert';
 import styled from 'styled-components';
 
 import Button from './Button';
 import ToggleButton from './ToggleButton';
 
+import { insertImage } from './ipc';
+
+import { actions as noteActions } from './store/notes';
 import { Notes, App } from './store';
 
 import { createNote, deleteNote, toggleEdit } from './actions';
+
+const { remote } = window.require('electron');
 
 const Container = styled.div`
   button {
@@ -19,7 +25,7 @@ const Container = styled.div`
 `;
 
 function Toolbar({ createSnackbar }) {
-  const { currentNotebook, currentNote, noteContent } = useContext(Notes.State);
+  const { currentNotebook, currentNote, noteContent, cursorPosition } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
   const { isEditing } = useContext(App.State);
@@ -37,6 +43,28 @@ function Toolbar({ createSnackbar }) {
     deleteNote(notesDispatch, createSnackbar, currentNote);
   }
 
+  async function onClickInsertImage() {
+    const filenames = remote.dialog.showOpenDialogSync(remote.getCurrentWindow(), {
+      filters: [
+        { name: 'Image', extensions: ['png', 'gif', 'jpg', 'jpeg']}
+      ]
+    });
+    
+    if (filenames && filenames.length) {
+      // const url = fileUrl(filenames[0]);
+      try {
+        const { url, alt } = await insertImage(currentNotebook.name, filenames[0]);
+        const contentLines = noteContent.split('\n');
+        const targetLine = contentLines[cursorPosition.line];
+        const newLine = targetLine.substring(0, cursorPosition.ch) + `![${alt}](${url})` + targetLine.substring(cursorPosition.ch);
+        contentLines[cursorPosition.line] = newLine;
+        notesDispatch(noteActions.setNoteContent(contentLines.join('\n')));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
   return (
     <Container>
       <Button variant="toolbar" data-tip="New" onClick={onClickNew} disabled={!currentNotebook}>
@@ -47,6 +75,9 @@ function Toolbar({ createSnackbar }) {
       </ToggleButton>
       <Button variant="toolbar" data-tip="Delete" onClick={onClickDelete} disabled={!currentNote}>
         <FontAwesomeIcon icon={faTrash} />
+      </Button>
+      <Button variant="toolbar" data-tip="Insert image" onClick={onClickInsertImage} disabled={!currentNote || !isEditing}>
+        <FontAwesomeIcon icon={faImage} />
       </Button>
     </Container>
   );

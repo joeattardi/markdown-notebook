@@ -43,7 +43,7 @@ const TitleInput = styled.input`
   }
 `;
 
-export default function NoteEditor({ title, content, onChange, onTitleChange, onRename, onExitEdit }) {
+export default function NoteEditor({ title, content, onChange, onTitleChange, onCursorChange, onRename, onExitEdit }) {
   const contextMenu = remote.Menu.buildFromTemplate([
     { role: 'cut' },
     { role: 'copy' },
@@ -57,6 +57,10 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
     if (data.origin) {
       onChange(value);
     }
+  }
+
+  function handleCursorChange(editor, data) {
+    onCursorChange(editor.getCursor());
   }
 
   function onTitleKeyDown(event) {
@@ -91,6 +95,7 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
       <CodeMirror
         ref={editorRef}
         onBeforeChange={onEditorChange}
+        onCursor={handleCursorChange}
         options={{
           mode: 'markdown'
         }}

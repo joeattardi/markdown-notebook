@@ -4,7 +4,9 @@ const path = require('path');
 const readline = require('readline');
 
 const { dialog, ipcMain } = require('electron');
+const fileUrl = require('file-url');
 const slugify = require('slugify');
+const uuid = require('uuid/v1');
 
 const { NOTE_DIRECTORY } = require('./config');
 const frontmatter = require('./frontMatter');
@@ -201,6 +203,16 @@ function getNoteData(notebook, filename) {
   });
 }
 
+function insertImage(notebook, imagePath) {
+  const dest = path.resolve(NOTE_DIRECTORY, notebook, uuid() + path.extname(imagePath));
+  fs.copyFileSync(imagePath, dest);
+
+  return {
+    url: fileUrl(dest),
+    alt: path.basename(imagePath)
+  };
+}
+
 ipcMain.on('getNotebooks', event => {
   try {
     event.sender.send('notebooks', null, getNotebooks());
@@ -281,6 +293,14 @@ ipcMain.on('renameNote', (event, notebook, note, newName) => {
   try {
     event.sender.send('noteRenamed', null, renameNote(notebook, note, newName));
   } catch (error) {
-    event.sender.send('noteRenamed', { message: error.message }, null);
+    event.sender.send('noteRenamed', { message: error.message });
+  }
+});
+
+ipcMain.on('insertImage', (event, notebook, imagePath) => {
+  try {
+    event.sender.send('imageInserted', null, insertImage(notebook, imagePath));
+  } catch (error) {
+    event.sender.send('imageInserted', { message: error.message });
   }
 });

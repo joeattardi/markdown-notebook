@@ -7,6 +7,7 @@ const SET_NOTES = 'SET_NOTES';
 const SET_NOTEBOOKS = 'SET_NOTEBOOKS';
 const SET_CURRENT_NOTEBOOK = 'SET_CURRENT_NOTEBOOK';
 const SET_CURRENT_NOTE = 'SET_CURRENT_NOTE';
+const SET_CURSOR_POSITION = 'SET_CURSOR_POSITION';
 const SET_NOTE_CONTENT = 'SET_NOTE_CONTENT';
 const SET_NOTE_TITLE = 'SET_NOTE_TITLE';
 const ADD_NOTE = 'ADD_NOTE';
@@ -21,6 +22,7 @@ export const actions = {
   setNotebooks: notebooks => ({ type: SET_NOTEBOOKS, payload: notebooks }),
   setCurrentNotebook: currentNotebook => ({ type: SET_CURRENT_NOTEBOOK, payload: currentNotebook }),
   setCurrentNote: currentNote => ({ type: SET_CURRENT_NOTE, payload: currentNote }),
+  setCursorPosition: position => ({ type: SET_CURSOR_POSITION, payload: position }),
   setNoteContent: noteContent => ({ type: SET_NOTE_CONTENT, payload: noteContent }),
   setNoteTitle: title => ({ type: SET_NOTE_TITLE, payload: title }),
   addNote: note => ({ type: ADD_NOTE, payload: note }),
@@ -40,7 +42,8 @@ const initialState = {
   notes: [],
   currentNote: null,
   noteContent: '',
-  noteTitle: ''
+  noteTitle: '',
+  cursorPosition: null
 };
 
 function reducer(state, { type, payload }) {
@@ -72,6 +75,11 @@ function reducer(state, { type, payload }) {
       return {
         ...state,
         noteContent: payload
+      };
+    case SET_CURSOR_POSITION:
+      return {
+        ...state,
+        cursorPosition: payload
       };
     case ADD_NOTE:
       return {

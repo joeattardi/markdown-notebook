@@ -61,3 +61,7 @@ export function renameNote(notebook, note, newName) {
 export function setIsEditing(isEditing) {
   ipcRenderer.send('isEditing', isEditing);
 }
+
+export function insertImage(notebook, imagePath) {
+  return callApi('insertImage', 'imageInserted', notebook, imagePath);
+}

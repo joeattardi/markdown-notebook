@@ -41,6 +41,10 @@ export default function NoteContent() {
     notesDispatch(noteActions.setNoteContent(content));
   }
 
+  function onCursorChange(cursor) {
+    notesDispatch(noteActions.setCursorPosition(cursor));
+  }
+
   function onTitleChange(title) {
     notesDispatch(noteActions.setNoteTitle(title));
   }
@@ -62,6 +66,7 @@ export default function NoteContent() {
             title={noteTitle}
             content={noteContent}
             onTitleChange={onTitleChange}
+            onCursorChange={onCursorChange}
             onExitEdit={onExitEdit}
             onChange={onNoteChange} 
             onRename={onRename} />
