@@ -17,6 +17,7 @@ import {
   createNotebook,
   deleteNote,
   deleteNotebook,
+  insertImage,
   toggleEdit,
   renameNotebook,
   renameNote
@@ -39,7 +40,7 @@ const Container = styled.div`
 `;
 
 function Main({ createSnackbar }) {
-  const { currentNotebook, currentNote, notebooks, noteContent, noteTitle } = useContext(Notes.State);
+  const { currentNotebook, currentNote, cursorPosition, notebooks, noteContent, noteTitle } = useContext(Notes.State);
   const { isEditing, isLoading } = useContext(App.State);
 
   const appDispatch = useContext(App.Dispatch);
@@ -85,6 +86,13 @@ function Main({ createSnackbar }) {
       renameNote(notesDispatch, currentNotebook, currentNote, noteContent, noteTitle);
     });
   }, [appDispatch, notesDispatch, isEditing, currentNote, noteContent, currentNotebook, noteTitle]);
+
+  useEffect(() => {
+    ipcRenderer.removeAllListeners('menu:insertImage');
+    ipcRenderer.on('menu:insertImage', () => {
+      insertImage(currentNotebook, noteContent, cursorPosition, notesDispatch);
+    });
+  })
 
   return (
     <div>

@@ -26,7 +26,7 @@ const Container = styled.div`
 `;
 
 export default function NoteContent() {
-  const { currentNotebook, currentNote, noteContent, noteTitle } = useContext(Notes.State);
+  const { currentNotebook, currentNote, cursorPosition, noteContent, noteTitle } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
   const appDispatch = useContext(App.Dispatch);
@@ -65,6 +65,7 @@ export default function NoteContent() {
           <NoteEditor
             title={noteTitle}
             content={noteContent}
+            cursorPosition={cursorPosition}
             onTitleChange={onTitleChange}
             onCursorChange={onCursorChange}
             onExitEdit={onExitEdit}

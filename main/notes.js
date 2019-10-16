@@ -21,13 +21,18 @@ function deleteNote(noteFilename) {
 
 function renameNotebook(notebook, newName) {
   debug(`Renaming notebook "${notebook}" to "${newName}"`);
-  fs.renameSync(path.resolve(NOTE_DIRECTORY, notebook), path.resolve(NOTE_DIRECTORY, newName));
+  fs.renameSync(
+    path.resolve(NOTE_DIRECTORY, notebook),
+    path.resolve(NOTE_DIRECTORY, newName)
+  );
 }
 
 function deleteNotebook(notebook) {
   const notebookPath = path.resolve(NOTE_DIRECTORY, notebook);
 
-  fs.readdirSync(notebookPath).forEach(note => fs.unlinkSync(path.resolve(notebookPath, note)));
+  fs.readdirSync(notebookPath).forEach(note =>
+    fs.unlinkSync(path.resolve(notebookPath, note))
+  );
   fs.rmdirSync(notebookPath);
 }
 
@@ -73,13 +78,17 @@ function createNote(notebook) {
 
   const newNoteName = getNewNoteName(notebook);
   const newNoteSlug = slugify(newNoteName).toLowerCase();
-  const newNoteFilename = path.resolve(NOTE_DIRECTORY, notebook, newNoteSlug + '.md');
+  const newNoteFilename = path.resolve(
+    NOTE_DIRECTORY,
+    notebook,
+    newNoteSlug + '.md'
+  );
 
   const note = {
     title: newNoteName,
     filename: newNoteFilename,
     content: ''
-  }
+  };
 
   saveNote(note);
 
@@ -97,17 +106,23 @@ function getNotebooks() {
     id: slugify(name),
     count: getNoteCount(name)
   }));
-};
+}
 
 function getNoteCount(notebook) {
   debug(`Getting note count for notebook: ${notebook}`);
-  return fs.readdirSync(path.resolve(NOTE_DIRECTORY, notebook)).length;
+  return fs
+    .readdirSync(path.resolve(NOTE_DIRECTORY, notebook))
+    .filter(filename => path.extname(filename) === '.md').length;
 }
 
 async function getNotes(notebook) {
   debug(`Getting notes for notebook: ${notebook}`);
   const noteFiles = await fs.readdir(path.resolve(NOTE_DIRECTORY, notebook));
-  const notes = await Promise.all(noteFiles.map(filename => getNoteData(notebook, filename)));
+  const notes = await Promise.all(
+    noteFiles
+      .filter(filename => path.extname(filename) === '.md')
+      .map(filename => getNoteData(notebook, filename))
+  );
   notes.sort((a, b) => a.title.localeCompare(b.title));
   return notes;
 }
@@ -128,25 +143,35 @@ function getUniqueFilename(notebook, baseName) {
   debug(`Finding unique filename for: ${baseName}`);
   let counter = 1;
   let name = baseName;
-  let filename = path.resolve(NOTE_DIRECTORY, notebook, slugify(name).toLowerCase() + '.md');
+  let filename = path.resolve(
+    NOTE_DIRECTORY,
+    notebook,
+    slugify(name).toLowerCase() + '.md'
+  );
 
   while (fs.existsSync(filename)) {
     name = `${baseName} ${counter++}`;
-    filename = path.resolve(NOTE_DIRECTORY, notebook, slugify(name).toLowerCase() + '.md');
+    filename = path.resolve(
+      NOTE_DIRECTORY,
+      notebook,
+      slugify(name).toLowerCase() + '.md'
+    );
   }
 
   return filename;
 }
 
 function renameNote(notebook, note, newName) {
-  debug(`Renaming note "${note.title} in notebook "${notebook}" to "${newName}"`);
+  debug(
+    `Renaming note "${note.title} in notebook "${notebook}" to "${newName}"`
+  );
 
   const newNote = {
     title: newName,
     filename: getUniqueFilename(notebook, newName || 'Untitled'),
     content: note.content
   };
-  
+
   fs.renameSync(note.filename, newNote.filename);
   saveNote(newNote);
 
@@ -166,7 +191,9 @@ function getNoteData(notebook, filename) {
   debug(`Getting note data for ${notebook}/${filename}`);
   return new Promise((resolve, reject) => {
     const reader = readline.createInterface({
-      input: fs.createReadStream(path.resolve(NOTE_DIRECTORY, notebook, filename))
+      input: fs.createReadStream(
+        path.resolve(NOTE_DIRECTORY, notebook, filename)
+      )
     });
 
     const slug = slugify(filename.slice(0, -3));
@@ -204,7 +231,11 @@ function getNoteData(notebook, filename) {
 }
 
 function insertImage(notebook, imagePath) {
-  const dest = path.resolve(NOTE_DIRECTORY, notebook, uuid() + path.extname(imagePath));
+  const dest = path.resolve(
+    NOTE_DIRECTORY,
+    notebook,
+    uuid() + path.extname(imagePath)
+  );
   fs.copyFileSync(imagePath, dest);
 
   return {
@@ -265,7 +296,7 @@ ipcMain.on('deleteNote', (event, noteFilename) => {
 
 ipcMain.on('createNotebook', event => {
   try {
-    event.sender.send('notebookCreated', null, createNotebook()); 
+    event.sender.send('notebookCreated', null, createNotebook());
   } catch (error) {
     event.sender.send('notebookCreated', { message: error.message }, null);
   }

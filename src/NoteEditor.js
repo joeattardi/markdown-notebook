@@ -43,7 +43,7 @@ const TitleInput = styled.input`
   }
 `;
 
-export default function NoteEditor({ title, content, onChange, onTitleChange, onCursorChange, onRename, onExitEdit }) {
+export default function NoteEditor({ cursorPosition, title, content, onChange, onTitleChange, onCursorChange, onRename, onExitEdit }) {
   const contextMenu = remote.Menu.buildFromTemplate([
     { role: 'cut' },
     { role: 'copy' },
@@ -56,6 +56,12 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
   function onEditorChange(editor, data, value) {
     if (data.origin) {
       onChange(value);
+    }
+  }
+
+  function afterEditorChange(editor, data, value) {
+    if (!data.origin) {
+      editor.setCursor(cursorPosition);
     }
   }
 
@@ -94,6 +100,7 @@ export default function NoteEditor({ title, content, onChange, onTitleChange, on
         onBlur={onRename} />
       <CodeMirror
         ref={editorRef}
+        onChange={afterEditorChange}
         onBeforeChange={onEditorChange}
         onCursor={handleCursorChange}
         options={{

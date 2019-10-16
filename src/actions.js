@@ -5,6 +5,8 @@ import { actions as noteActions } from './store/notes';
 
 import { showMessageBox } from './interactions';
 
+const { remote } = window.require('electron');
+
 export async function createNotebook(dispatch) {
   try {
     const newNotebook = await ipc.createNotebook();
@@ -134,4 +136,25 @@ export async function renameNote(notesDispatch, currentNotebook, currentNote, no
 
 export function renameNotebook(appDispatch) {
   appDispatch(appActions.setRenamingNotebook(true));
+}
+
+export async function insertImage(currentNotebook, noteContent, cursorPosition, notesDispatch) {
+  const filenames = remote.dialog.showOpenDialogSync(remote.getCurrentWindow(), {
+    filters: [
+      { name: 'Image', extensions: ['png', 'gif', 'jpg', 'jpeg']}
+    ]
+  });
+  
+  if (filenames && filenames.length) {
+    try {
+      const { url, alt } = await ipc.insertImage(currentNotebook.name, filenames[0]);
+      const contentLines = noteContent.split('\n');
+      const targetLine = contentLines[cursorPosition.line];
+      const newLine = targetLine.substring(0, cursorPosition.ch) + `![${alt}](${url})` + targetLine.substring(cursorPosition.ch);
+      contentLines[cursorPosition.line] = newLine;
+      notesDispatch(noteActions.setNoteContent(contentLines.join('\n')));
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

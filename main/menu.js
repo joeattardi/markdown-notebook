@@ -44,11 +44,18 @@ exports.buildApplicationMenu = function() {
           click: toggleEdit
         },
         {
+          label: 'Insert Image',
+          accelerator: 'CommandOrControl+Shift+I',
+          id: 'insertImage',
+          enabled: false,
+          click: insertImage
+        },
+        { type: 'separator' },
+        {
           label: 'Rename Notebook',
           accelerator: 'CommandOrControl+Shift+R',
           click: renameNotebook
         },
-        { type: 'separator' },
         {
           label: 'Delete Notebook',
           accelerator: 'CommandOrControl+Shift+Backspace',
@@ -120,8 +127,13 @@ function renameNotebook(menuItem, browserWindow, event) {
   browserWindow.webContents.send('menu:renameNotebook');
 }
 
+function insertImage(menuItem, browserWindow, event) {
+  browserWindow.webContents.send('menu:insertImage');
+}
+
 ipcMain.on('isEditing', (event, isEditing) => {
   menuTemplate[1].submenu[3].label = isEditing ? 'Exit Edit Mode' : 'Edit Note';
+  menuTemplate[1].submenu[4].enabled = isEditing;
   menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 });
