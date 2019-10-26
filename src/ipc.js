@@ -2,60 +2,46 @@ import { debounce } from 'debounce';
 
 const { ipcRenderer } = window.require('electron');
 
-function callApi(call, response, ...callArgs) {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.once(response, (event, error, ...responseArgs) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(...responseArgs);
-      }
-    });
-
-    ipcRenderer.send(call, ...callArgs);
-  });
-}
-
 export function saveNote(note) {
-  return callApi('saveNote', 'noteSaved', note);
+  return ipcRenderer.invoke('saveNote', note);
 }
 
 export const debouncedSave = debounce(saveNote, 500);
 
 export function getNote(filename) {
-  return callApi('getNote', 'note', filename);
+  return ipcRenderer.invoke('getNote', filename);
 }
 
 export function getNotebooks() {
-  return callApi('getNotebooks', 'notebooks');
+  return ipcRenderer.invoke('getNotebooks');
 }
 
 export function getNotes(notebook) {
-  return callApi('getNotes', 'notes', notebook);
+  return ipcRenderer.invoke('getNotes', notebook);
 }
 
 export function createNote(notebook) {
-  return callApi('createNote', 'noteCreated', notebook);
+  return ipcRenderer.invoke('createNote', notebook);
 }
 
 export function deleteNote(filename) {
-  return callApi('deleteNote', 'noteDeleted', filename);
+  return ipcRenderer.invoke('deleteNote', filename);
 }
 
 export function createNotebook() {
-  return callApi('createNotebook', 'notebookCreated');
+  return ipcRenderer.invoke('createNotebook');
 }
 
 export function deleteNotebook(notebook) {
-  return callApi('deleteNotebook', 'notebookDeleted', notebook);
+  return ipcRenderer.invoke('deleteNotebook', notebook);
 }
 
 export function renameNotebook(notebook, newName) {
-  return callApi('renameNotebook', 'notebookRenamed', notebook, newName);
+  return ipcRenderer.invoke('renameNotebook', notebook, newName);
 }
 
 export function renameNote(notebook, note, newName) {
-  return callApi('renameNote', 'noteRenamed', notebook, note, newName);
+  return ipcRenderer.invoke('renameNote', notebook, note, newName);
 }
 
 export function setIsEditing(isEditing) {
@@ -63,5 +49,5 @@ export function setIsEditing(isEditing) {
 }
 
 export function insertImage(notebook, imagePath) {
-  return callApi('insertImage', 'imageInserted', notebook, imagePath);
+  return ipcRenderer.invoke('insertImage', notebook, imagePath);
 }

@@ -73,6 +73,7 @@ function NoteList({ createSnackbar }) {
           notesDispatch(noteActions.setNoteContent(note.content));
           notesDispatch(noteActions.setNoteTitle(note.title));
         } catch (error) {
+          console.log(error);
           showMessageBox({
             type: 'error',
             message: 'Failed to load note',

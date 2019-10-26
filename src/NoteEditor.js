@@ -60,7 +60,7 @@ export default function NoteEditor({ cursorPosition, title, content, onChange, o
   }
 
   function afterEditorChange(editor, data, value) {
-    if (!data.origin) {
+    if (!data.origin && cursorPosition) {
       editor.setCursor(cursorPosition);
     }
   }

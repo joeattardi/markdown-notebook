@@ -9,7 +9,7 @@ let menuTemplate;
 exports.buildApplicationMenu = function() {
   menuTemplate = [
     {
-      label: app.getName(),
+      label: app.name,
       submenu: [
         {
           label: 'About Markdown Notebook',

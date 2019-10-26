@@ -244,94 +244,46 @@ function insertImage(notebook, imagePath) {
   };
 }
 
-ipcMain.on('getNotebooks', event => {
-  try {
-    event.sender.send('notebooks', null, getNotebooks());
-  } catch (error) {
-    event.sender.send('notebooks', { message: error.message }, null);
-  }
+ipcMain.handle('getNotebooks', () => {
+  return getNotebooks();
 });
 
-ipcMain.on('getNotes', async (event, notebook) => {
-  try {
-    event.sender.send('notes', null, await getNotes(notebook));
-  } catch (error) {
-    event.sender.send('notes', { message: error.message }, null);
-  }
+ipcMain.handle('getNotes', async (event, notebook) => {
+  return await getNotes(notebook);
 });
 
-ipcMain.on('getNote', (event, filename) => {
-  try {
-    event.sender.send('note', null, getNote(filename));
-  } catch (error) {
-    event.sender.send('notes', { message: error.message }, null);
-  }
+ipcMain.handle('getNote', (event, filename) => {
+  return getNote(filename);
 });
 
-ipcMain.on('saveNote', (event, note) => {
-  try {
-    saveNote(note);
-    event.sender.send('noteSaved');
-  } catch (error) {
-    event.sender.send('noteSaved', { message: error.message });
-  }
+ipcMain.handle('saveNote', (event, note) => {
+  saveNote(note);
 });
 
-ipcMain.on('createNote', (event, notebook) => {
-  try {
-    event.sender.send('noteCreated', null, createNote(notebook));
-  } catch (error) {
-    event.sender.send('noteCreated', { message: error.message }, null);
-  }
+ipcMain.handle('createNote', (event, notebook) => {
+  return createNote(notebook);
 });
 
-ipcMain.on('deleteNote', (event, noteFilename) => {
-  try {
-    deleteNote(noteFilename);
-    event.sender.send('noteDeleted');
-  } catch (error) {
-    event.sender.send('noteDeleted', { message: error.message });
-  }
+ipcMain.handle('deleteNote', (event, noteFilename) => {
+  deleteNote(noteFilename);
 });
 
-ipcMain.on('createNotebook', event => {
-  try {
-    event.sender.send('notebookCreated', null, createNotebook());
-  } catch (error) {
-    event.sender.send('notebookCreated', { message: error.message }, null);
-  }
+ipcMain.handle('createNotebook', () => {
+  return createNotebook();
 });
 
-ipcMain.on('deleteNotebook', (event, notebook) => {
-  try {
-    deleteNotebook(notebook);
-    event.sender.send('notebookDeleted');
-  } catch (error) {
-    event.sender.send('notebookDeleted', { message: error.message });
-  }
+ipcMain.handle('deleteNotebook', (event, notebook) => {
+  deleteNotebook(notebook);
 });
 
-ipcMain.on('renameNotebook', (event, notebook, newName) => {
-  try {
-    renameNotebook(notebook, newName);
-    event.sender.send('notebookRenamed');
-  } catch (error) {
-    event.sender.send('notebookRenamed', { message: error.message });
-  }
+ipcMain.handle('renameNotebook', (event, notebook, newName) => {
+  renameNotebook(notebook, newName);
 });
 
-ipcMain.on('renameNote', (event, notebook, note, newName) => {
-  try {
-    event.sender.send('noteRenamed', null, renameNote(notebook, note, newName));
-  } catch (error) {
-    event.sender.send('noteRenamed', { message: error.message });
-  }
+ipcMain.handle('renameNote', (event, notebook, note, newName) => {
+  return renameNote(notebook, note, newName);
 });
 
-ipcMain.on('insertImage', (event, notebook, imagePath) => {
-  try {
-    event.sender.send('imageInserted', null, insertImage(notebook, imagePath));
-  } catch (error) {
-    event.sender.send('imageInserted', { message: error.message });
-  }
+ipcMain.handle('insertImage', (event, notebook, imagePath) => {
+  return insertImage(notebook, imagePath);
 });
