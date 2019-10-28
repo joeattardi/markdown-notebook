@@ -31,7 +31,6 @@ const Container = styled.div`
     color: rgba(255, 255, 255, 0.5);
     font-size: 0.8rem;
     padding: 0.25rem;
-    text-transform: uppercase;
   }
 `;
 
