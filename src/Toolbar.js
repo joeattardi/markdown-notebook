@@ -8,12 +8,9 @@ import styled from 'styled-components';
 import Button from './Button';
 import ToggleButton from './ToggleButton';
 
-import { actions as noteActions } from './store/notes';
 import { Notes, App } from './store';
 
 import { createNote, deleteNote, toggleEdit, insertImage } from './actions';
-
-const { remote } = window.require('electron');
 
 const Container = styled.div`
   button {
@@ -42,24 +39,6 @@ function Toolbar({ createSnackbar }) {
 
   function onClickInsertImage() {
     insertImage(currentNotebook, noteContent, cursorPosition, notesDispatch);
-    // const filenames = remote.dialog.showOpenDialogSync(remote.getCurrentWindow(), {
-    //   filters: [
-    //     { name: 'Image', extensions: ['png', 'gif', 'jpg', 'jpeg']}
-    //   ]
-    // });
-    
-    // if (filenames && filenames.length) {
-    //   try {
-    //     const { url, alt } = await insertImage(currentNotebook.name, filenames[0]);
-    //     const contentLines = noteContent.split('\n');
-    //     const targetLine = contentLines[cursorPosition.line];
-    //     const newLine = targetLine.substring(0, cursorPosition.ch) + `![${alt}](${url})` + targetLine.substring(cursorPosition.ch);
-    //     contentLines[cursorPosition.line] = newLine;
-    //     notesDispatch(noteActions.setNoteContent(contentLines.join('\n')));
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
   }
 
   return (
