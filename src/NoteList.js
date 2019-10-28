@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import Note from './Note';
 
 import { showMessageBox } from './interactions';
-import { createNote, getNote, saveNote } from './ipc';
+import { createNote, getNote, saveNote, setCurrentNote } from './ipc';
 
 import { deleteNote } from './actions';
 
@@ -68,6 +68,10 @@ export default function NoteList() {
   }
 
   useEffect(() => {
+    setCurrentNote(currentNote);
+  }, [currentNote]);
+
+  useEffect(() => {
     async function setNoteContent() {
       if (currentNote) {
         try {
@@ -75,7 +79,6 @@ export default function NoteList() {
           notesDispatch(noteActions.setNoteContent(note.content));
           notesDispatch(noteActions.setNoteTitle(note.title));
         } catch (error) {
-          console.log(error);
           showMessageBox({
             type: 'error',
             message: 'Failed to load note',

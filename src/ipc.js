@@ -48,6 +48,10 @@ export function setIsEditing(isEditing) {
   ipcRenderer.send('isEditing', isEditing);
 }
 
+export function setCurrentNote(note) {
+  ipcRenderer.send('currentNote', note);
+}
+
 export function insertImage(notebook, imagePath) {
   return ipcRenderer.invoke('insertImage', notebook, imagePath);
 }

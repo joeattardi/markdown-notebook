@@ -137,3 +137,9 @@ ipcMain.on('isEditing', (event, isEditing) => {
   menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 });
+
+ipcMain.on('currentNote', (event, currentNote) => {
+  menuTemplate[1].submenu[8].enabled = !!currentNote;
+  menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
+});
