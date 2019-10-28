@@ -24,6 +24,7 @@ const Container = styled.div`
   background: ${({ theme }) => theme.sidebarBackground};
   color: #ffffff;
   height: 100%;
+  padding-top: 1rem;
   user-select: none;
 
   h2 {

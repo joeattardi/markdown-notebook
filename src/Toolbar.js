@@ -13,8 +13,11 @@ import { Notes, App } from './store';
 import { createNote, deleteNote, toggleEdit, insertImage } from './actions';
 
 const Container = styled.div`
+  display: flex;
+  
   button {
     font-size: 0.8rem;
+    display: flex;
   }
 `;
 
