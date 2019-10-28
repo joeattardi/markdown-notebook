@@ -34,6 +34,7 @@ exports.buildApplicationMenu = function() {
         {
           label: 'New Note',
           accelerator: 'CommandOrControl+N',
+          enabled: false,
           click: newNote
         },
         { type: 'separator' },
@@ -54,11 +55,13 @@ exports.buildApplicationMenu = function() {
         {
           label: 'Rename Notebook',
           accelerator: 'CommandOrControl+Shift+R',
+          enabled: false,
           click: renameNotebook
         },
         {
           label: 'Delete Notebook',
           accelerator: 'CommandOrControl+Shift+Backspace',
+          enabled: false,
           click: deleteNotebook
         },
         {
@@ -140,6 +143,21 @@ ipcMain.on('isEditing', (event, isEditing) => {
 
 ipcMain.on('currentNote', (event, currentNote) => {
   menuTemplate[1].submenu[8].enabled = !!currentNote;
+  menuTemplate[1].submenu[3].enabled = !!currentNote;
+
+  if (!currentNote) {
+    menuTemplate[1].submenu[3].label = 'Edit Note';
+    menuTemplate[1].submenu[4].enabled = false;
+  }
+
+  menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
+});
+
+ipcMain.on('currentNotebook', (event, currentNotebook) => {
+  menuTemplate[1].submenu[1].enabled = !!currentNotebook;
+  menuTemplate[1].submenu[6].enabled = !!currentNotebook;
+  menuTemplate[1].submenu[7].enabled = !!currentNotebook;
   menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 });

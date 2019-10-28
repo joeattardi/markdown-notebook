@@ -137,6 +137,10 @@ export default function Sidebar() {
     getNotes();
   }, [appDispatch, notesDispatch, currentNotebook]);
 
+  useEffect(() => {
+    ipc.setCurrentNotebook(currentNotebook);
+  }, [currentNotebook]);
+
   return (
     <Container>
       <Toolbar>

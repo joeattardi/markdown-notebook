@@ -52,6 +52,10 @@ export function setCurrentNote(note) {
   ipcRenderer.send('currentNote', note);
 }
 
+export function setCurrentNotebook(notebook) {
+  ipcRenderer.send('currentNotebook', notebook);
+}
+
 export function insertImage(notebook, imagePath) {
   return ipcRenderer.invoke('insertImage', notebook, imagePath);
 }
