@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { SnackbarProvider } from 'react-snackbar-alert';
 import { ToastProvider } from 'react-toast-notifications';
 import ReactTooltip from 'react-tooltip'
 import { ThemeProvider, createGlobalStyle } from 'styled-components';

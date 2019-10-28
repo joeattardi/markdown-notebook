@@ -129,6 +129,8 @@ export default function Sidebar() {
         } finally {
           appDispatch(appActions.setLoading(false));
         }
+      } else {
+        appDispatch(appActions.setLoading(false));
       }
     }
 
