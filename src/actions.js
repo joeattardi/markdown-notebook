@@ -35,7 +35,7 @@ export async function createNote(notesDispatch, appDispatch, notebook) {
   }
 }
 
-export async function deleteNote(notesDispatch, createSnackbar, note) {
+export async function deleteNote(notesDispatch, addToast, note) {
   const result = showMessageBox({
     type: 'question',
     buttons: ['Cancel', 'Confirm'],
@@ -48,9 +48,9 @@ export async function deleteNote(notesDispatch, createSnackbar, note) {
     try {
       await ipc.deleteNote(note.filename);
       notesDispatch(noteActions.deleteNote(note));
-      createSnackbar({
-        message: `Note "${note.title}" was deleted.`,
-        theme: 'success'
+      addToast(`Note "${note.title}" was deleted.`, { 
+        appearance: 'success',
+        autoDismiss: true
       });
     } catch (error) {
       showMessageBox({
@@ -62,7 +62,7 @@ export async function deleteNote(notesDispatch, createSnackbar, note) {
   }
 }
 
-export async function deleteNotebook(notesDispatch, createSnackbar, notebooks, notebook) {
+export async function deleteNotebook(notesDispatch, addToast, notebooks, notebook) {
   const result = showMessageBox({
     type: 'question',
     buttons: ['Cancel', 'Confirm'],
@@ -75,9 +75,9 @@ export async function deleteNotebook(notesDispatch, createSnackbar, notebooks, n
     try {
       await ipc.deleteNotebook(notebook.name);
       notesDispatch(noteActions.deleteNotebook(notebook));
-      createSnackbar({
-        message: `Notebook "${notebook.name}" was deleted.`,
-        theme: 'success'
+      addToast(`Notebook "${notebook.name}" was deleted.`, {
+        appearance: 'success',
+        autoDismiss: true
       });
 
       if (notebooks.length === 1) { // we deleted the last notebook

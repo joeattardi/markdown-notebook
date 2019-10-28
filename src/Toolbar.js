@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage, faPencilAlt, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { wrapComponent } from 'react-snackbar-alert';
+import { useToasts } from 'react-toast-notifications';
 import styled from 'styled-components';
 
 import Button from './Button';
@@ -21,7 +21,8 @@ const Container = styled.div`
   }
 `;
 
-function Toolbar({ createSnackbar }) {
+export default function Toolbar() {
+  const { addToast } = useToasts();
   const { currentNotebook, currentNote, noteContent, cursorPosition } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
@@ -37,7 +38,7 @@ function Toolbar({ createSnackbar }) {
   }
 
   function onClickDelete() {
-    deleteNote(notesDispatch, createSnackbar, currentNote);
+    deleteNote(notesDispatch, addToast, currentNote);
   }
 
   function onClickInsertImage() {
@@ -61,5 +62,3 @@ function Toolbar({ createSnackbar }) {
     </Container>
   );
 }
-
-export default wrapComponent(Toolbar);

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 
 import SplitPane from 'react-split-pane';
-import { wrapComponent } from 'react-snackbar-alert';
+import { useToasts } from 'react-toast-notifications';
 import styled from 'styled-components';
 
 import LoadingScreen from './LoadingScreen';
@@ -39,7 +39,9 @@ const Container = styled.div`
   }
 `;
 
-function Main({ createSnackbar }) {
+export default function Main() {
+  const { addToast } = useToasts();
+
   const { currentNotebook, currentNote, cursorPosition, notebooks, noteContent, noteTitle } = useContext(Notes.State);
   const { isEditing, isLoading } = useContext(App.State);
 
@@ -68,16 +70,16 @@ function Main({ createSnackbar }) {
   useEffect(() => {
     ipcRenderer.removeAllListeners('menu:deleteNote');
     ipcRenderer.on('menu:deleteNote', () => {
-      deleteNote(notesDispatch, createSnackbar, currentNote);
+      deleteNote(notesDispatch, addToast, currentNote);
     });
-  }, [appDispatch, currentNote, createSnackbar, notesDispatch]);
+  }, [appDispatch, currentNote, addToast, notesDispatch]);
 
   useEffect(() => {
     ipcRenderer.removeAllListeners('menu:deleteNotebook');
     ipcRenderer.on('menu:deleteNotebook', () => {
-      deleteNotebook(notesDispatch, createSnackbar, notebooks, currentNotebook);
+      deleteNotebook(notesDispatch, addToast, notebooks, currentNotebook);
     })
-  }, [notesDispatch, createSnackbar, notebooks, currentNotebook]);
+  }, [notesDispatch, addToast, notebooks, currentNotebook]);
 
   useEffect(() => {
     ipcRenderer.removeAllListeners('menu:toggleEdit');
@@ -113,5 +115,3 @@ function Main({ createSnackbar }) {
     </div>    
   );
 }
-
-export default wrapComponent(Main);

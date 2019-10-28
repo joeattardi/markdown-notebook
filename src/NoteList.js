@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-import { wrapComponent } from 'react-snackbar-alert';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
+import { useToasts } from 'react-toast-notifications';
 import styled from 'styled-components';
 
 import Note from './Note';
@@ -21,7 +21,9 @@ const Container = styled.div`
   height: calc(100% - 3.25rem);
 `;
 
-function NoteList({ createSnackbar }) {
+export default function NoteList() {
+  const { addToast } = useToasts();
+
   const { notes, currentNote, currentNotebook, noteContent } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
@@ -43,7 +45,7 @@ function NoteList({ createSnackbar }) {
   }
 
   function onDeleteNote(note) {
-    deleteNote(notesDispatch, createSnackbar, note);
+    deleteNote(notesDispatch, addToast, note);
   }
 
   async function onClickNote(note) {
@@ -150,5 +152,3 @@ function NoNotesMessage({ onClickNew }) {
     </StyledMessage>
   );
 }
-
-export default wrapComponent(NoteList);

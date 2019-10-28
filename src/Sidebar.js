@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { useToasts } from 'react-toast-notifications';
 import styled from 'styled-components';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,7 +9,6 @@ import {
   faTrash,
   faPencilAlt
 } from '@fortawesome/free-solid-svg-icons';
-import { wrapComponent } from 'react-snackbar-alert';
 
 import Notebook from './Notebook';
 
@@ -69,7 +69,9 @@ const Toolbar = styled.div`
   }
 `;
 
-function Sidebar({ createSnackbar }) {
+export default function Sidebar() {
+  const { addToast } = useToasts();
+
   const { notebooks, currentNotebook } = useContext(Notes.State);
   const notesDispatch = useContext(Notes.Dispatch);
 
@@ -80,7 +82,7 @@ function Sidebar({ createSnackbar }) {
   }
 
   function onDeleteNotebook(notebook) {
-    actions.deleteNotebook(notesDispatch, createSnackbar, notebooks, notebook);
+    actions.deleteNotebook(notesDispatch, addToast, notebooks, notebook);
   }
 
   function onClickNew() {
@@ -88,7 +90,7 @@ function Sidebar({ createSnackbar }) {
   }
 
   function onClickDelete() {
-    actions.deleteNotebook(notesDispatch, createSnackbar, notebooks, currentNotebook);
+    actions.deleteNotebook(notesDispatch, addToast, notebooks, currentNotebook);
   }
 
   function onClickRename() {
@@ -224,5 +226,3 @@ function NoNotebooksMessage({ onClickNew }) {
     </StyledMessage>
   );
 }
-
-export default wrapComponent(Sidebar);
