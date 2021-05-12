@@ -10,7 +10,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.11.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
-    "codemirror": "^5.49.0",
+    "codemirror": "^5.58.2",
     "debounce": "^1.2.0",
     "debug": "^4.1.1",
     "electron-about-window": "^1.13.1",
